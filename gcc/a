@@ -1,0 +1,5810 @@
+# 1 "tree.h"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "tree.h"
+# 25 "tree.h"
+# 1 "/usr/include/hashtab.h" 1 3 4
+# 39 "/usr/include/hashtab.h" 3 4
+# 1 "/usr/include/ansidecl.h" 1 3 4
+# 40 "/usr/include/hashtab.h" 2 3 4
+
+
+
+
+
+
+typedef unsigned int hashval_t;
+
+
+
+
+typedef hashval_t (*htab_hash) (const void *);
+
+
+
+
+
+
+typedef int (*htab_eq) (const void *, const void *);
+
+
+
+typedef void (*htab_del) (void *);
+
+
+
+
+
+typedef int (*htab_trav) (void **, void *);
+
+
+
+
+
+typedef void *(*htab_alloc) (size_t, size_t);
+
+
+typedef void (*htab_free) (void *);
+
+
+
+typedef void *(*htab_alloc_with_arg) (void *, size_t, size_t);
+typedef void (*htab_free_with_arg) (void *, void *);
+# 99 "/usr/include/hashtab.h" 3 4
+struct htab
+{
+
+  htab_hash hash_f;
+
+
+  htab_eq eq_f;
+
+
+  htab_del del_f;
+
+
+  void ** entries;
+
+
+  size_t size;
+
+
+  size_t n_elements;
+
+
+  size_t n_deleted;
+
+
+
+  unsigned int searches;
+
+
+
+  unsigned int collisions;
+
+
+  htab_alloc alloc_f;
+  htab_free free_f;
+
+
+  void * alloc_arg;
+  htab_alloc_with_arg alloc_with_arg_f;
+  htab_free_with_arg free_with_arg_f;
+
+
+
+  unsigned int size_prime_index;
+};
+
+typedef struct htab *htab_t;
+
+
+enum insert_option {NO_INSERT, INSERT};
+
+
+
+extern htab_t htab_create_alloc (size_t, htab_hash,
+                                    htab_eq, htab_del,
+                                    htab_alloc, htab_free);
+
+extern htab_t htab_create_alloc_ex (size_t, htab_hash,
+                                      htab_eq, htab_del,
+                                      void *, htab_alloc_with_arg,
+                                      htab_free_with_arg);
+
+
+extern htab_t htab_create (size_t, htab_hash, htab_eq, htab_del);
+extern htab_t htab_try_create (size_t, htab_hash, htab_eq, htab_del);
+
+extern void htab_set_functions_ex (htab_t, htab_hash,
+                                       htab_eq, htab_del,
+                                       void *, htab_alloc_with_arg,
+                                       htab_free_with_arg);
+
+extern void htab_delete (htab_t);
+extern void htab_empty (htab_t);
+
+extern void * htab_find (htab_t, const void *);
+extern void ** htab_find_slot (htab_t, const void *, enum insert_option);
+extern void * htab_find_with_hash (htab_t, const void *, hashval_t);
+extern void ** htab_find_slot_with_hash (htab_t, const void *,
+       hashval_t, enum insert_option);
+extern void htab_clear_slot (htab_t, void **);
+extern void htab_remove_elt (htab_t, void *);
+extern void htab_remove_elt_with_hash (htab_t, void *, hashval_t);
+
+extern void htab_traverse (htab_t, htab_trav, void *);
+extern void htab_traverse_noresize (htab_t, htab_trav, void *);
+
+extern size_t htab_size (htab_t);
+extern size_t htab_elements (htab_t);
+extern double htab_collisions (htab_t);
+
+
+extern htab_hash htab_hash_pointer;
+
+
+extern htab_eq htab_eq_pointer;
+
+
+extern hashval_t htab_hash_string (const void *);
+
+
+extern hashval_t iterative_hash (const void *, size_t, hashval_t);
+# 26 "tree.h" 2
+# 1 "machmode.h" 1
+# 29 "machmode.h"
+extern const char * const mode_name[NUM_MACHINE_MODES];
+
+
+
+
+# 1 "mode-classes.def" 1
+# 35 "machmode.h" 2
+
+enum mode_class { MODE_RANDOM, MODE_CC, MODE_INT, MODE_PARTIAL_INT, MODE_FRACT, MODE_UFRACT, MODE_ACCUM, MODE_UACCUM, MODE_FLOAT, MODE_DECIMAL_FLOAT, MODE_COMPLEX_INT, MODE_COMPLEX_FLOAT, MODE_VECTOR_INT, MODE_VECTOR_FRACT, MODE_VECTOR_UFRACT, MODE_VECTOR_ACCUM, MODE_VECTOR_UACCUM, MODE_VECTOR_FLOAT, MAX_MODE_CLASS };
+
+
+
+
+
+
+extern const unsigned char mode_class[NUM_MACHINE_MODES];
+# 179 "machmode.h"
+extern CONST_MODE_SIZE unsigned char mode_size[NUM_MACHINE_MODES];
+
+
+
+
+extern const unsigned short mode_precision[NUM_MACHINE_MODES];
+
+
+
+extern CONST_MODE_IBIT unsigned char mode_ibit[NUM_MACHINE_MODES];
+
+
+
+extern CONST_MODE_FBIT unsigned char mode_fbit[NUM_MACHINE_MODES];
+
+
+
+
+
+extern const unsigned HOST_WIDE_INT mode_mask_array[NUM_MACHINE_MODES];
+
+
+
+
+
+extern const unsigned char mode_inner[NUM_MACHINE_MODES];
+# 216 "machmode.h"
+extern const unsigned char mode_nunits[NUM_MACHINE_MODES];
+
+
+
+
+extern const unsigned char mode_wider[NUM_MACHINE_MODES];
+
+
+extern const unsigned char mode_2xwider[NUM_MACHINE_MODES];
+
+
+
+
+
+
+extern enum machine_mode mode_for_size (unsigned int, enum mode_class, int);
+
+
+
+extern enum machine_mode smallest_mode_for_size (unsigned int,
+       enum mode_class);
+
+
+
+
+
+extern enum machine_mode int_mode_for_mode (enum machine_mode);
+
+
+
+extern enum machine_mode get_best_mode (int, int, unsigned int,
+     enum machine_mode, int);
+
+
+
+extern CONST_MODE_BASE_ALIGN unsigned char mode_base_align[NUM_MACHINE_MODES];
+
+extern unsigned get_mode_alignment (enum machine_mode);
+
+
+
+
+
+extern const unsigned char class_narrowest_mode[MAX_MODE_CLASS];
+
+
+
+
+
+extern enum machine_mode byte_mode;
+extern enum machine_mode word_mode;
+extern enum machine_mode ptr_mode;
+
+
+extern void init_adjust_machine_modes (void);
+# 27 "tree.h" 2
+# 1 "input.h" 1
+# 26 "input.h"
+extern struct line_maps *line_table;
+# 57 "input.h"
+struct location_s
+{
+
+  const char *file;
+
+
+  int line;
+};
+
+typedef struct location_s expanded_location;
+typedef struct location_s location_t;
+typedef location_t *source_locus;
+
+
+extern location_t unknown_location;
+
+
+
+
+
+
+struct file_stack
+{
+  struct file_stack *next;
+  location_t location;
+};
+
+
+extern const char *main_input_filename;
+
+extern location_t input_location;
+
+
+
+extern void push_srcloc (const char *name, int line);
+
+extern void pop_srcloc (void);
+extern void restore_input_file_stack (int);
+# 104 "input.h"
+extern struct file_stack *input_file_stack;
+
+
+extern int input_file_stack_tick;
+# 28 "tree.h" 2
+# 1 "statistics.h" 1
+# 29 "tree.h" 2
+# 1 "vec.h" 1
+# 420 "vec.h"
+extern void *vec_gc_p_reserve (void *, int );
+extern void *vec_gc_p_reserve_exact (void *, int );
+extern void *vec_gc_o_reserve (void *, int, size_t, size_t );
+extern void *vec_gc_o_reserve_exact (void *, int, size_t, size_t
+         );
+extern void ggc_free (void *);
+
+extern void *vec_heap_p_reserve (void *, int );
+extern void *vec_heap_p_reserve_exact (void *, int );
+extern void *vec_heap_o_reserve (void *, int, size_t, size_t );
+extern void *vec_heap_o_reserve_exact (void *, int, size_t, size_t
+           );
+# 30 "tree.h" 2
+# 1 "double-int.h" 1
+# 24 "double-int.h"
+# 1 "/usr/include/gmp.h" 1 3 4
+# 52 "/usr/include/gmp.h" 3 4
+# 1 "/usr/lib/gcc/i586-suse-linux/4.3/include/stddef.h" 1 3 4
+# 214 "/usr/lib/gcc/i586-suse-linux/4.3/include/stddef.h" 3 4
+typedef unsigned int size_t;
+# 53 "/usr/include/gmp.h" 2 3 4
+# 193 "/usr/include/gmp.h" 3 4
+typedef unsigned long int mp_limb_t;
+typedef long int mp_limb_signed_t;
+
+
+
+
+
+
+typedef struct
+{
+  int _mp_alloc;
+
+  int _mp_size;
+
+
+  mp_limb_t *_mp_d;
+} __mpz_struct;
+
+
+
+
+typedef __mpz_struct MP_INT;
+typedef __mpz_struct mpz_t[1];
+
+typedef mp_limb_t * mp_ptr;
+typedef const mp_limb_t * mp_srcptr;
+
+
+
+
+
+
+
+typedef long int mp_size_t;
+typedef long int mp_exp_t;
+
+
+typedef struct
+{
+  __mpz_struct _mp_num;
+  __mpz_struct _mp_den;
+} __mpq_struct;
+
+typedef __mpq_struct MP_RAT;
+typedef __mpq_struct mpq_t[1];
+
+typedef struct
+{
+  int _mp_prec;
+
+
+
+  int _mp_size;
+
+
+  mp_exp_t _mp_exp;
+  mp_limb_t *_mp_d;
+} __mpf_struct;
+
+
+typedef __mpf_struct mpf_t[1];
+
+
+typedef enum
+{
+  GMP_RAND_ALG_DEFAULT = 0,
+  GMP_RAND_ALG_LC = GMP_RAND_ALG_DEFAULT
+} gmp_randalg_t;
+
+
+typedef struct
+{
+  mpz_t _mp_seed;
+  gmp_randalg_t _mp_alg;
+  union {
+    void *_mp_lc;
+  } _mp_algdata;
+} __gmp_randstate_struct;
+typedef __gmp_randstate_struct gmp_randstate_t[1];
+
+
+
+typedef const __mpz_struct *mpz_srcptr;
+typedef __mpz_struct *mpz_ptr;
+typedef const __mpf_struct *mpf_srcptr;
+typedef __mpf_struct *mpf_ptr;
+typedef const __mpq_struct *mpq_srcptr;
+typedef __mpq_struct *mpq_ptr;
+# 526 "/usr/include/gmp.h" 3 4
+ void __gmp_set_memory_functions (void *(*) (size_t), void *(*) (void *, size_t, size_t), void (*) (void *, size_t)) ;
+
+
+
+
+ void __gmp_get_memory_functions (void *(**) (size_t), void *(**) (void *, size_t, size_t), void (**) (void *, size_t)) ;
+
+
+
+
+ extern const int __gmp_bits_per_limb;
+
+
+ extern int __gmp_errno;
+
+
+ extern const char * const __gmp_version;
+
+
+
+
+
+
+ void __gmp_randinit (gmp_randstate_t, gmp_randalg_t, ...);
+
+
+ void __gmp_randinit_default (gmp_randstate_t);
+
+
+ void __gmp_randinit_lc_2exp (gmp_randstate_t, mpz_srcptr, unsigned long int, unsigned long int);
+
+
+
+
+ int __gmp_randinit_lc_2exp_size (gmp_randstate_t, unsigned long);
+
+
+ void __gmp_randinit_mt (gmp_randstate_t);
+
+
+void __gmp_randinit_set (gmp_randstate_t, const __gmp_randstate_struct *);
+
+
+ void __gmp_randseed (gmp_randstate_t, mpz_srcptr);
+
+
+ void __gmp_randseed_ui (gmp_randstate_t, unsigned long int);
+
+
+ void __gmp_randclear (gmp_randstate_t);
+
+
+unsigned long __gmp_urandomb_ui (gmp_randstate_t, unsigned long);
+
+
+unsigned long __gmp_urandomm_ui (gmp_randstate_t, unsigned long);
+
+
+
+
+
+ int __gmp_asprintf (char **, const char *, ...);
+# 605 "/usr/include/gmp.h" 3 4
+ int __gmp_printf (const char *, ...);
+
+
+ int __gmp_snprintf (char *, size_t, const char *, ...);
+
+
+ int __gmp_sprintf (char *, const char *, ...);
+# 647 "/usr/include/gmp.h" 3 4
+ int __gmp_scanf (const char *, ...);
+
+
+ int __gmp_sscanf (const char *, const char *, ...);
+# 672 "/usr/include/gmp.h" 3 4
+ void *__gmpz_realloc (mpz_ptr, mp_size_t);
+
+
+
+ void __gmpz_abs (mpz_ptr, mpz_srcptr);
+
+
+
+ void __gmpz_add (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ void __gmpz_add_ui (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ void __gmpz_addmul (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ void __gmpz_addmul_ui (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ void __gmpz_and (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ void __gmpz_array_init (mpz_ptr, mp_size_t, mp_size_t);
+
+
+ void __gmpz_bin_ui (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ void __gmpz_bin_uiui (mpz_ptr, unsigned long int, unsigned long int);
+
+
+ void __gmpz_cdiv_q (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ void __gmpz_cdiv_q_2exp (mpz_ptr, mpz_srcptr, unsigned long);
+
+
+ unsigned long int __gmpz_cdiv_q_ui (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ void __gmpz_cdiv_qr (mpz_ptr, mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ unsigned long int __gmpz_cdiv_qr_ui (mpz_ptr, mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ void __gmpz_cdiv_r (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ void __gmpz_cdiv_r_2exp (mpz_ptr, mpz_srcptr, unsigned long);
+
+
+ unsigned long int __gmpz_cdiv_r_ui (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ unsigned long int __gmpz_cdiv_ui (mpz_srcptr, unsigned long int) __attribute__ ((__pure__));
+
+
+ void __gmpz_clear (mpz_ptr);
+
+
+ void __gmpz_clrbit (mpz_ptr, unsigned long int);
+
+
+ int __gmpz_cmp (mpz_srcptr, mpz_srcptr) __attribute__ ((__pure__));
+
+
+ int __gmpz_cmp_d (mpz_srcptr, double) __attribute__ ((__pure__));
+
+
+ int __gmpz_cmp_si (mpz_srcptr, signed long int) __attribute__ ((__pure__));
+
+
+ int __gmpz_cmp_ui (mpz_srcptr, unsigned long int) __attribute__ ((__pure__));
+
+
+ int __gmpz_cmpabs (mpz_srcptr, mpz_srcptr) __attribute__ ((__pure__));
+
+
+ int __gmpz_cmpabs_d (mpz_srcptr, double) __attribute__ ((__pure__));
+
+
+ int __gmpz_cmpabs_ui (mpz_srcptr, unsigned long int) __attribute__ ((__pure__));
+
+
+ void __gmpz_com (mpz_ptr, mpz_srcptr);
+
+
+ void __gmpz_combit (mpz_ptr, unsigned long int);
+
+
+ int __gmpz_congruent_p (mpz_srcptr, mpz_srcptr, mpz_srcptr) __attribute__ ((__pure__));
+
+
+ int __gmpz_congruent_2exp_p (mpz_srcptr, mpz_srcptr, unsigned long) __attribute__ ((__pure__));
+
+
+ int __gmpz_congruent_ui_p (mpz_srcptr, unsigned long, unsigned long) __attribute__ ((__pure__));
+
+
+ void __gmpz_divexact (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ void __gmpz_divexact_ui (mpz_ptr, mpz_srcptr, unsigned long);
+
+
+ int __gmpz_divisible_p (mpz_srcptr, mpz_srcptr) __attribute__ ((__pure__));
+
+
+ int __gmpz_divisible_ui_p (mpz_srcptr, unsigned long) __attribute__ ((__pure__));
+
+
+ int __gmpz_divisible_2exp_p (mpz_srcptr, unsigned long) __attribute__ ((__pure__));
+
+
+ void __gmpz_dump (mpz_srcptr);
+
+
+ void *__gmpz_export (void *, size_t *, int, size_t, int, size_t, mpz_srcptr);
+
+
+ void __gmpz_fac_ui (mpz_ptr, unsigned long int);
+
+
+ void __gmpz_fdiv_q (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ void __gmpz_fdiv_q_2exp (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ unsigned long int __gmpz_fdiv_q_ui (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ void __gmpz_fdiv_qr (mpz_ptr, mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ unsigned long int __gmpz_fdiv_qr_ui (mpz_ptr, mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ void __gmpz_fdiv_r (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ void __gmpz_fdiv_r_2exp (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ unsigned long int __gmpz_fdiv_r_ui (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ unsigned long int __gmpz_fdiv_ui (mpz_srcptr, unsigned long int) __attribute__ ((__pure__));
+
+
+ void __gmpz_fib_ui (mpz_ptr, unsigned long int);
+
+
+ void __gmpz_fib2_ui (mpz_ptr, mpz_ptr, unsigned long int);
+
+
+ int __gmpz_fits_sint_p (mpz_srcptr) __attribute__ ((__pure__));
+
+
+ int __gmpz_fits_slong_p (mpz_srcptr) __attribute__ ((__pure__));
+
+
+ int __gmpz_fits_sshort_p (mpz_srcptr) __attribute__ ((__pure__));
+
+
+
+ int __gmpz_fits_uint_p (mpz_srcptr) __attribute__ ((__pure__));
+
+
+
+
+ int __gmpz_fits_ulong_p (mpz_srcptr) __attribute__ ((__pure__));
+
+
+
+
+ int __gmpz_fits_ushort_p (mpz_srcptr) __attribute__ ((__pure__));
+
+
+
+ void __gmpz_gcd (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ unsigned long int __gmpz_gcd_ui (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ void __gmpz_gcdext (mpz_ptr, mpz_ptr, mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ double __gmpz_get_d (mpz_srcptr) __attribute__ ((__pure__));
+
+
+ double __gmpz_get_d_2exp (signed long int *, mpz_srcptr);
+
+
+ long int __gmpz_get_si (mpz_srcptr) __attribute__ ((__pure__));
+
+
+ char *__gmpz_get_str (char *, int, mpz_srcptr);
+
+
+
+ unsigned long int __gmpz_get_ui (mpz_srcptr) __attribute__ ((__pure__));
+
+
+
+
+ mp_limb_t __gmpz_getlimbn (mpz_srcptr, mp_size_t) __attribute__ ((__pure__));
+
+
+
+ unsigned long int __gmpz_hamdist (mpz_srcptr, mpz_srcptr) __attribute__ ((__pure__));
+
+
+ void __gmpz_import (mpz_ptr, size_t, int, size_t, int, size_t, const void *);
+
+
+ void __gmpz_init (mpz_ptr);
+
+
+ void __gmpz_init2 (mpz_ptr, unsigned long);
+
+
+ void __gmpz_init_set (mpz_ptr, mpz_srcptr);
+
+
+ void __gmpz_init_set_d (mpz_ptr, double);
+
+
+ void __gmpz_init_set_si (mpz_ptr, signed long int);
+
+
+ int __gmpz_init_set_str (mpz_ptr, const char *, int);
+
+
+ void __gmpz_init_set_ui (mpz_ptr, unsigned long int);
+# 922 "/usr/include/gmp.h" 3 4
+ int __gmpz_invert (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ void __gmpz_ior (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ int __gmpz_jacobi (mpz_srcptr, mpz_srcptr) __attribute__ ((__pure__));
+
+
+
+
+ int __gmpz_kronecker_si (mpz_srcptr, long) __attribute__ ((__pure__));
+
+
+ int __gmpz_kronecker_ui (mpz_srcptr, unsigned long) __attribute__ ((__pure__));
+
+
+ int __gmpz_si_kronecker (long, mpz_srcptr) __attribute__ ((__pure__));
+
+
+ int __gmpz_ui_kronecker (unsigned long, mpz_srcptr) __attribute__ ((__pure__));
+
+
+ void __gmpz_lcm (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ void __gmpz_lcm_ui (mpz_ptr, mpz_srcptr, unsigned long);
+
+
+
+
+ void __gmpz_lucnum_ui (mpz_ptr, unsigned long int);
+
+
+ void __gmpz_lucnum2_ui (mpz_ptr, mpz_ptr, unsigned long int);
+
+
+ int __gmpz_millerrabin (mpz_srcptr, int) __attribute__ ((__pure__));
+
+
+ void __gmpz_mod (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+
+
+ void __gmpz_mul (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ void __gmpz_mul_2exp (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ void __gmpz_mul_si (mpz_ptr, mpz_srcptr, long int);
+
+
+ void __gmpz_mul_ui (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+
+ void __gmpz_neg (mpz_ptr, mpz_srcptr);
+
+
+
+ void __gmpz_nextprime (mpz_ptr, mpz_srcptr);
+# 997 "/usr/include/gmp.h" 3 4
+ int __gmpz_perfect_power_p (mpz_srcptr) __attribute__ ((__pure__));
+
+
+
+ int __gmpz_perfect_square_p (mpz_srcptr) __attribute__ ((__pure__));
+
+
+
+
+ unsigned long int __gmpz_popcount (mpz_srcptr) __attribute__ ((__pure__));
+
+
+
+ void __gmpz_pow_ui (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ void __gmpz_powm (mpz_ptr, mpz_srcptr, mpz_srcptr, mpz_srcptr);
+
+
+ void __gmpz_powm_ui (mpz_ptr, mpz_srcptr, unsigned long int, mpz_srcptr);
+
+
+ int __gmpz_probab_prime_p (mpz_srcptr, int) __attribute__ ((__pure__));
+
+
+ void __gmpz_random (mpz_ptr, mp_size_t);
+
+
+ void __gmpz_random2 (mpz_ptr, mp_size_t);
+
+
+ void __gmpz_realloc2 (mpz_ptr, unsigned long);
+
+
+ unsigned long int __gmpz_remove (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ int __gmpz_root (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ void __gmpz_rootrem (mpz_ptr,mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ void __gmpz_rrandomb (mpz_ptr, gmp_randstate_t, unsigned long int);
+
+
+ unsigned long int __gmpz_scan0 (mpz_srcptr, unsigned long int) __attribute__ ((__pure__));
+
+
+ unsigned long int __gmpz_scan1 (mpz_srcptr, unsigned long int) __attribute__ ((__pure__));
+
+
+ void __gmpz_set (mpz_ptr, mpz_srcptr);
+
+
+ void __gmpz_set_d (mpz_ptr, double);
+
+
+ void __gmpz_set_f (mpz_ptr, mpf_srcptr);
+
+
+
+ void __gmpz_set_q (mpz_ptr, mpq_srcptr);
+
+
+
+ void __gmpz_set_si (mpz_ptr, signed long int);
+
+
+ int __gmpz_set_str (mpz_ptr, const char *, int);
+
+
+ void __gmpz_set_ui (mpz_ptr, unsigned long int);
+
+
+ void __gmpz_setbit (mpz_ptr, unsigned long int);
+
+
+
+ size_t __gmpz_size (mpz_srcptr) __attribute__ ((__pure__));
+
+
+
+ size_t __gmpz_sizeinbase (mpz_srcptr, int) __attribute__ ((__pure__));
+
+
+ void __gmpz_sqrt (mpz_ptr, mpz_srcptr);
+
+
+ void __gmpz_sqrtrem (mpz_ptr, mpz_ptr, mpz_srcptr);
+
+
+ void __gmpz_sub (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ void __gmpz_sub_ui (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ void __gmpz_ui_sub (mpz_ptr, unsigned long int, mpz_srcptr);
+
+
+ void __gmpz_submul (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ void __gmpz_submul_ui (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ void __gmpz_swap (mpz_ptr, mpz_ptr) ;
+
+
+ unsigned long int __gmpz_tdiv_ui (mpz_srcptr, unsigned long int) __attribute__ ((__pure__));
+
+
+ void __gmpz_tdiv_q (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ void __gmpz_tdiv_q_2exp (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ unsigned long int __gmpz_tdiv_q_ui (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ void __gmpz_tdiv_qr (mpz_ptr, mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ unsigned long int __gmpz_tdiv_qr_ui (mpz_ptr, mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ void __gmpz_tdiv_r (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+ void __gmpz_tdiv_r_2exp (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ unsigned long int __gmpz_tdiv_r_ui (mpz_ptr, mpz_srcptr, unsigned long int);
+
+
+ int __gmpz_tstbit (mpz_srcptr, unsigned long int) __attribute__ ((__pure__));
+
+
+ void __gmpz_ui_pow_ui (mpz_ptr, unsigned long int, unsigned long int);
+
+
+ void __gmpz_urandomb (mpz_ptr, gmp_randstate_t, unsigned long int);
+
+
+ void __gmpz_urandomm (mpz_ptr, gmp_randstate_t, mpz_srcptr);
+
+
+
+ void __gmpz_xor (mpz_ptr, mpz_srcptr, mpz_srcptr);
+
+
+
+
+
+
+ void __gmpq_abs (mpq_ptr, mpq_srcptr);
+
+
+
+ void __gmpq_add (mpq_ptr, mpq_srcptr, mpq_srcptr);
+
+
+ void __gmpq_canonicalize (mpq_ptr);
+
+
+ void __gmpq_clear (mpq_ptr);
+
+
+ int __gmpq_cmp (mpq_srcptr, mpq_srcptr) __attribute__ ((__pure__));
+
+
+ int __gmpq_cmp_si (mpq_srcptr, long, unsigned long) __attribute__ ((__pure__));
+
+
+ int __gmpq_cmp_ui (mpq_srcptr, unsigned long int, unsigned long int) __attribute__ ((__pure__));
+
+
+ void __gmpq_div (mpq_ptr, mpq_srcptr, mpq_srcptr);
+
+
+ void __gmpq_div_2exp (mpq_ptr, mpq_srcptr, unsigned long);
+
+
+ int __gmpq_equal (mpq_srcptr, mpq_srcptr) __attribute__ ((__pure__));
+
+
+ void __gmpq_get_num (mpz_ptr, mpq_srcptr);
+
+
+ void __gmpq_get_den (mpz_ptr, mpq_srcptr);
+
+
+ double __gmpq_get_d (mpq_srcptr) __attribute__ ((__pure__));
+
+
+ char *__gmpq_get_str (char *, int, mpq_srcptr);
+
+
+ void __gmpq_init (mpq_ptr);
+
+
+
+
+
+
+
+ void __gmpq_inv (mpq_ptr, mpq_srcptr);
+
+
+ void __gmpq_mul (mpq_ptr, mpq_srcptr, mpq_srcptr);
+
+
+ void __gmpq_mul_2exp (mpq_ptr, mpq_srcptr, unsigned long);
+
+
+
+ void __gmpq_neg (mpq_ptr, mpq_srcptr);
+# 1224 "/usr/include/gmp.h" 3 4
+ void __gmpq_set (mpq_ptr, mpq_srcptr);
+
+
+ void __gmpq_set_d (mpq_ptr, double);
+
+
+ void __gmpq_set_den (mpq_ptr, mpz_srcptr);
+
+
+ void __gmpq_set_f (mpq_ptr, mpf_srcptr);
+
+
+ void __gmpq_set_num (mpq_ptr, mpz_srcptr);
+
+
+ void __gmpq_set_si (mpq_ptr, signed long int, unsigned long int);
+
+
+ int __gmpq_set_str (mpq_ptr, const char *, int);
+
+
+ void __gmpq_set_ui (mpq_ptr, unsigned long int, unsigned long int);
+
+
+ void __gmpq_set_z (mpq_ptr, mpz_srcptr);
+
+
+ void __gmpq_sub (mpq_ptr, mpq_srcptr, mpq_srcptr);
+
+
+ void __gmpq_swap (mpq_ptr, mpq_ptr) ;
+
+
+
+
+
+ void __gmpf_abs (mpf_ptr, mpf_srcptr);
+
+
+ void __gmpf_add (mpf_ptr, mpf_srcptr, mpf_srcptr);
+
+
+ void __gmpf_add_ui (mpf_ptr, mpf_srcptr, unsigned long int);
+
+ void __gmpf_ceil (mpf_ptr, mpf_srcptr);
+
+
+ void __gmpf_clear (mpf_ptr);
+
+
+ int __gmpf_cmp (mpf_srcptr, mpf_srcptr) __attribute__ ((__pure__));
+
+
+ int __gmpf_cmp_d (mpf_srcptr, double) __attribute__ ((__pure__));
+
+
+ int __gmpf_cmp_si (mpf_srcptr, signed long int) __attribute__ ((__pure__));
+
+
+ int __gmpf_cmp_ui (mpf_srcptr, unsigned long int) __attribute__ ((__pure__));
+
+
+ void __gmpf_div (mpf_ptr, mpf_srcptr, mpf_srcptr);
+
+
+ void __gmpf_div_2exp (mpf_ptr, mpf_srcptr, unsigned long int);
+
+
+ void __gmpf_div_ui (mpf_ptr, mpf_srcptr, unsigned long int);
+
+
+ void __gmpf_dump (mpf_srcptr);
+
+
+ int __gmpf_eq (mpf_srcptr, mpf_srcptr, unsigned long int) __attribute__ ((__pure__));
+
+
+ int __gmpf_fits_sint_p (mpf_srcptr) __attribute__ ((__pure__));
+
+
+ int __gmpf_fits_slong_p (mpf_srcptr) __attribute__ ((__pure__));
+
+
+ int __gmpf_fits_sshort_p (mpf_srcptr) __attribute__ ((__pure__));
+
+
+ int __gmpf_fits_uint_p (mpf_srcptr) __attribute__ ((__pure__));
+
+
+ int __gmpf_fits_ulong_p (mpf_srcptr) __attribute__ ((__pure__));
+
+
+ int __gmpf_fits_ushort_p (mpf_srcptr) __attribute__ ((__pure__));
+
+
+ void __gmpf_floor (mpf_ptr, mpf_srcptr);
+
+
+ double __gmpf_get_d (mpf_srcptr) __attribute__ ((__pure__));
+
+
+ double __gmpf_get_d_2exp (signed long int *, mpf_srcptr);
+
+
+ unsigned long int __gmpf_get_default_prec (void) __attribute__ ((__pure__));
+
+
+ unsigned long int __gmpf_get_prec (mpf_srcptr) __attribute__ ((__pure__));
+
+
+ long __gmpf_get_si (mpf_srcptr) __attribute__ ((__pure__));
+
+
+ char *__gmpf_get_str (char *, mp_exp_t *, int, size_t, mpf_srcptr);
+
+
+ unsigned long __gmpf_get_ui (mpf_srcptr) __attribute__ ((__pure__));
+
+
+ void __gmpf_init (mpf_ptr);
+
+
+ void __gmpf_init2 (mpf_ptr, unsigned long int);
+
+
+ void __gmpf_init_set (mpf_ptr, mpf_srcptr);
+
+
+ void __gmpf_init_set_d (mpf_ptr, double);
+
+
+ void __gmpf_init_set_si (mpf_ptr, signed long int);
+
+
+ int __gmpf_init_set_str (mpf_ptr, const char *, int);
+
+
+ void __gmpf_init_set_ui (mpf_ptr, unsigned long int);
+
+
+
+
+
+
+
+ int __gmpf_integer_p (mpf_srcptr) __attribute__ ((__pure__));
+
+
+ void __gmpf_mul (mpf_ptr, mpf_srcptr, mpf_srcptr);
+
+
+ void __gmpf_mul_2exp (mpf_ptr, mpf_srcptr, unsigned long int);
+
+
+ void __gmpf_mul_ui (mpf_ptr, mpf_srcptr, unsigned long int);
+
+
+ void __gmpf_neg (mpf_ptr, mpf_srcptr);
+
+
+
+
+
+
+
+ void __gmpf_pow_ui (mpf_ptr, mpf_srcptr, unsigned long int);
+
+
+ void __gmpf_random2 (mpf_ptr, mp_size_t, mp_exp_t);
+
+
+ void __gmpf_reldiff (mpf_ptr, mpf_srcptr, mpf_srcptr);
+
+
+ void __gmpf_set (mpf_ptr, mpf_srcptr);
+
+
+ void __gmpf_set_d (mpf_ptr, double);
+
+
+ void __gmpf_set_default_prec (unsigned long int) ;
+
+
+ void __gmpf_set_prec (mpf_ptr, unsigned long int);
+
+
+ void __gmpf_set_prec_raw (mpf_ptr, unsigned long int) ;
+
+
+ void __gmpf_set_q (mpf_ptr, mpq_srcptr);
+
+
+ void __gmpf_set_si (mpf_ptr, signed long int);
+
+
+ int __gmpf_set_str (mpf_ptr, const char *, int);
+
+
+ void __gmpf_set_ui (mpf_ptr, unsigned long int);
+
+
+ void __gmpf_set_z (mpf_ptr, mpz_srcptr);
+
+
+ size_t __gmpf_size (mpf_srcptr) __attribute__ ((__pure__));
+
+
+ void __gmpf_sqrt (mpf_ptr, mpf_srcptr);
+
+
+ void __gmpf_sqrt_ui (mpf_ptr, unsigned long int);
+
+
+ void __gmpf_sub (mpf_ptr, mpf_srcptr, mpf_srcptr);
+
+
+ void __gmpf_sub_ui (mpf_ptr, mpf_srcptr, unsigned long int);
+
+
+ void __gmpf_swap (mpf_ptr, mpf_ptr) ;
+
+
+ void __gmpf_trunc (mpf_ptr, mpf_srcptr);
+
+
+ void __gmpf_ui_div (mpf_ptr, unsigned long int, mpf_srcptr);
+
+
+ void __gmpf_ui_sub (mpf_ptr, unsigned long int, mpf_srcptr);
+
+
+ void __gmpf_urandomb (mpf_t, gmp_randstate_t, unsigned long int);
+# 1464 "/usr/include/gmp.h" 3 4
+ mp_limb_t __gmpn_add (mp_ptr, mp_srcptr, mp_size_t, mp_srcptr,mp_size_t);
+
+
+
+
+ mp_limb_t __gmpn_add_1 (mp_ptr, mp_srcptr, mp_size_t, mp_limb_t) ;
+
+
+
+ mp_limb_t __gmpn_add_n (mp_ptr, mp_srcptr, mp_srcptr, mp_size_t);
+
+
+ mp_limb_t __gmpn_addmul_1 (mp_ptr, mp_srcptr, mp_size_t, mp_limb_t);
+
+
+ mp_limb_t __gmpn_bdivmod (mp_ptr, mp_ptr, mp_size_t, mp_srcptr, mp_size_t, unsigned long int);
+
+
+
+ int __gmpn_cmp (mp_srcptr, mp_srcptr, mp_size_t) __attribute__ ((__pure__));
+
+
+
+
+
+
+ mp_limb_t __gmpn_divexact_by3c (mp_ptr, mp_srcptr, mp_size_t, mp_limb_t);
+
+
+
+
+
+ mp_limb_t __gmpn_divrem (mp_ptr, mp_size_t, mp_ptr, mp_size_t, mp_srcptr, mp_size_t);
+
+
+ mp_limb_t __gmpn_divrem_1 (mp_ptr, mp_size_t, mp_srcptr, mp_size_t, mp_limb_t);
+
+
+ mp_limb_t __gmpn_divrem_2 (mp_ptr, mp_size_t, mp_ptr, mp_size_t, mp_srcptr);
+
+
+ mp_size_t __gmpn_gcd (mp_ptr, mp_ptr, mp_size_t, mp_ptr, mp_size_t);
+
+
+ mp_limb_t __gmpn_gcd_1 (mp_srcptr, mp_size_t, mp_limb_t) __attribute__ ((__pure__));
+
+
+ mp_size_t __gmpn_gcdext (mp_ptr, mp_ptr, mp_size_t *, mp_ptr, mp_size_t, mp_ptr, mp_size_t);
+
+
+ size_t __gmpn_get_str (unsigned char *, int, mp_ptr, mp_size_t);
+
+
+ unsigned long int __gmpn_hamdist (mp_srcptr, mp_srcptr, mp_size_t) __attribute__ ((__pure__));
+
+
+ mp_limb_t __gmpn_lshift (mp_ptr, mp_srcptr, mp_size_t, unsigned int);
+
+
+ mp_limb_t __gmpn_mod_1 (mp_srcptr, mp_size_t, mp_limb_t) __attribute__ ((__pure__));
+
+
+ mp_limb_t __gmpn_mul (mp_ptr, mp_srcptr, mp_size_t, mp_srcptr, mp_size_t);
+
+
+ mp_limb_t __gmpn_mul_1 (mp_ptr, mp_srcptr, mp_size_t, mp_limb_t);
+
+
+ void __gmpn_mul_n (mp_ptr, mp_srcptr, mp_srcptr, mp_size_t);
+
+
+ int __gmpn_perfect_square_p (mp_srcptr, mp_size_t) __attribute__ ((__pure__));
+
+
+ unsigned long int __gmpn_popcount (mp_srcptr, mp_size_t) __attribute__ ((__pure__));
+
+
+ mp_size_t __gmpn_pow_1 (mp_ptr, mp_srcptr, mp_size_t, mp_limb_t, mp_ptr);
+
+
+
+ mp_limb_t __gmpn_preinv_mod_1 (mp_srcptr, mp_size_t, mp_limb_t, mp_limb_t) __attribute__ ((__pure__));
+
+
+ void __gmpn_random (mp_ptr, mp_size_t);
+
+
+ void __gmpn_random2 (mp_ptr, mp_size_t);
+
+
+ mp_limb_t __gmpn_rshift (mp_ptr, mp_srcptr, mp_size_t, unsigned int);
+
+
+ unsigned long int __gmpn_scan0 (mp_srcptr, unsigned long int) __attribute__ ((__pure__));
+
+
+ unsigned long int __gmpn_scan1 (mp_srcptr, unsigned long int) __attribute__ ((__pure__));
+
+
+ mp_size_t __gmpn_set_str (mp_ptr, const unsigned char *, size_t, int);
+
+
+ mp_size_t __gmpn_sqrtrem (mp_ptr, mp_ptr, mp_srcptr, mp_size_t);
+
+
+
+ mp_limb_t __gmpn_sub (mp_ptr, mp_srcptr, mp_size_t, mp_srcptr,mp_size_t);
+
+
+
+
+ mp_limb_t __gmpn_sub_1 (mp_ptr, mp_srcptr, mp_size_t, mp_limb_t) ;
+
+
+
+ mp_limb_t __gmpn_sub_n (mp_ptr, mp_srcptr, mp_srcptr, mp_size_t);
+
+
+ mp_limb_t __gmpn_submul_1 (mp_ptr, mp_srcptr, mp_size_t, mp_limb_t);
+
+
+ void __gmpn_tdiv_qr (mp_ptr, mp_ptr, mp_size_t, mp_srcptr, mp_size_t, mp_srcptr, mp_size_t);
+# 1605 "/usr/include/gmp.h" 3 4
+extern __inline__ void
+__gmpz_abs (mpz_ptr __gmp_w, mpz_srcptr __gmp_u)
+{
+  if (__gmp_w != __gmp_u)
+    __gmpz_set (__gmp_w, __gmp_u);
+  __gmp_w->_mp_size = ((__gmp_w->_mp_size) >= 0 ? (__gmp_w->_mp_size) : -(__gmp_w->_mp_size));
+}
+# 1629 "/usr/include/gmp.h" 3 4
+extern __inline__
+
+int
+__gmpz_fits_uint_p (mpz_srcptr __gmp_z)
+{
+  mp_size_t __gmp_n = __gmp_z->_mp_size; mp_ptr __gmp_p = __gmp_z->_mp_d; return (__gmp_n == 0 || (__gmp_n == 1 && __gmp_p[0] <= (~ (unsigned) 0)));;
+}
+
+
+
+
+extern __inline__
+
+int
+__gmpz_fits_ulong_p (mpz_srcptr __gmp_z)
+{
+  mp_size_t __gmp_n = __gmp_z->_mp_size; mp_ptr __gmp_p = __gmp_z->_mp_d; return (__gmp_n == 0 || (__gmp_n == 1 && __gmp_p[0] <= (~ (unsigned long) 0)));;
+}
+
+
+
+
+extern __inline__
+
+int
+__gmpz_fits_ushort_p (mpz_srcptr __gmp_z)
+{
+  mp_size_t __gmp_n = __gmp_z->_mp_size; mp_ptr __gmp_p = __gmp_z->_mp_d; return (__gmp_n == 0 || (__gmp_n == 1 && __gmp_p[0] <= ((unsigned short) ~0)));;
+}
+
+
+
+
+extern __inline__
+
+unsigned long
+__gmpz_get_ui (mpz_srcptr __gmp_z)
+{
+  mp_ptr __gmp_p = __gmp_z->_mp_d;
+  mp_size_t __gmp_n = __gmp_z->_mp_size;
+  mp_limb_t __gmp_l = __gmp_p[0];
+
+
+
+
+
+
+  return (__gmp_n != 0 ? __gmp_l : 0);
+# 1685 "/usr/include/gmp.h" 3 4
+}
+
+
+
+
+extern __inline__
+
+mp_limb_t
+__gmpz_getlimbn (mpz_srcptr __gmp_z, mp_size_t __gmp_n)
+{
+  mp_limb_t __gmp_result = 0;
+  if (__builtin_expect ((__gmp_n >= 0 && __gmp_n < ((__gmp_z->_mp_size) >= 0 ? (__gmp_z->_mp_size) : -(__gmp_z->_mp_size))) != 0, 1))
+    __gmp_result = __gmp_z->_mp_d[__gmp_n];
+  return __gmp_result;
+}
+
+
+
+extern __inline__ void
+__gmpz_neg (mpz_ptr __gmp_w, mpz_srcptr __gmp_u)
+{
+  if (__gmp_w != __gmp_u)
+    __gmpz_set (__gmp_w, __gmp_u);
+  __gmp_w->_mp_size = - __gmp_w->_mp_size;
+}
+
+
+
+
+extern __inline__
+
+int
+__gmpz_perfect_square_p (mpz_srcptr __gmp_a)
+{
+  mp_size_t __gmp_asize;
+  int __gmp_result;
+
+  __gmp_asize = __gmp_a->_mp_size;
+  __gmp_result = (__gmp_asize >= 0);
+  if (__builtin_expect ((__gmp_asize > 0) != 0, 1))
+    __gmp_result = __gmpn_perfect_square_p (__gmp_a->_mp_d, __gmp_asize);
+  return __gmp_result;
+}
+
+
+
+
+extern __inline__
+
+unsigned long
+__gmpz_popcount (mpz_srcptr __gmp_u)
+{
+  mp_size_t __gmp_usize;
+  unsigned long __gmp_result;
+
+  __gmp_usize = __gmp_u->_mp_size;
+  __gmp_result = (__gmp_usize < 0 ? (~ (unsigned long) 0) : 0);
+  if (__builtin_expect ((__gmp_usize > 0) != 0, 1))
+    __gmp_result = __gmpn_popcount (__gmp_u->_mp_d, __gmp_usize);
+  return __gmp_result;
+}
+
+
+
+
+extern __inline__
+
+void
+__gmpz_set_q (mpz_ptr __gmp_w, mpq_srcptr __gmp_u)
+{
+  __gmpz_tdiv_q (__gmp_w, (&((__gmp_u)->_mp_num)), (&((__gmp_u)->_mp_den)));
+}
+
+
+
+
+extern __inline__
+
+size_t
+__gmpz_size (mpz_srcptr __gmp_z)
+{
+  return ((__gmp_z->_mp_size) >= 0 ? (__gmp_z->_mp_size) : -(__gmp_z->_mp_size));
+}
+
+
+
+
+
+
+extern __inline__ void
+__gmpq_abs (mpq_ptr __gmp_w, mpq_srcptr __gmp_u)
+{
+  if (__gmp_w != __gmp_u)
+    __gmpq_set (__gmp_w, __gmp_u);
+  __gmp_w->_mp_num._mp_size = ((__gmp_w->_mp_num._mp_size) >= 0 ? (__gmp_w->_mp_num._mp_size) : -(__gmp_w->_mp_num._mp_size));
+}
+
+
+
+extern __inline__ void
+__gmpq_neg (mpq_ptr __gmp_w, mpq_srcptr __gmp_u)
+{
+  if (__gmp_w != __gmp_u)
+    __gmpq_set (__gmp_w, __gmp_u);
+  __gmp_w->_mp_num._mp_size = - __gmp_w->_mp_num._mp_size;
+}
+# 2027 "/usr/include/gmp.h" 3 4
+extern __inline__
+
+mp_limb_t
+__gmpn_add (mp_ptr __gmp_wp, mp_srcptr __gmp_xp, mp_size_t __gmp_xsize, mp_srcptr __gmp_yp, mp_size_t __gmp_ysize)
+{
+  mp_limb_t __gmp_c;
+  do { mp_size_t __gmp_i; mp_limb_t __gmp_x; __gmp_i = (__gmp_ysize); if (__gmp_i != 0) { if (__gmpn_add_n (__gmp_wp, __gmp_xp, __gmp_yp, __gmp_i)) { do { if (__gmp_i >= (__gmp_xsize)) { (__gmp_c) = 1; goto __gmp_done; } __gmp_x = (__gmp_xp)[__gmp_i]; } while ((((__gmp_wp)[__gmp_i++] = (__gmp_x + 1) & ((~ ((mp_limb_t) (0))) >> 0)) == 0)); } } if ((__gmp_wp) != (__gmp_xp)) do { mp_size_t __gmp_j; ; for (__gmp_j = (__gmp_i); __gmp_j < (__gmp_xsize); __gmp_j++) (__gmp_wp)[__gmp_j] = (__gmp_xp)[__gmp_j]; } while (0); (__gmp_c) = 0; __gmp_done: ; } while (0);
+  return __gmp_c;
+}
+
+
+
+
+extern __inline__
+
+mp_limb_t
+__gmpn_add_1 (mp_ptr __gmp_dst, mp_srcptr __gmp_src, mp_size_t __gmp_size, mp_limb_t __gmp_n)
+{
+  mp_limb_t __gmp_c;
+  do { mp_size_t __gmp_i; mp_limb_t __gmp_x, __gmp_r; __gmp_x = (__gmp_src)[0]; __gmp_r = __gmp_x + (__gmp_n); (__gmp_dst)[0] = __gmp_r; if (((__gmp_r) < ((__gmp_n)))) { (__gmp_c) = 1; for (__gmp_i = 1; __gmp_i < (__gmp_size);) { __gmp_x = (__gmp_src)[__gmp_i]; __gmp_r = __gmp_x + 1; (__gmp_dst)[__gmp_i] = __gmp_r; ++__gmp_i; if (!((__gmp_r) < (1))) { if ((__gmp_src) != (__gmp_dst)) do { mp_size_t __gmp_j; ; for (__gmp_j = (__gmp_i); __gmp_j < (__gmp_size); __gmp_j++) (__gmp_dst)[__gmp_j] = (__gmp_src)[__gmp_j]; } while (0); (__gmp_c) = 0; break; } } } else { if ((__gmp_src) != (__gmp_dst)) do { mp_size_t __gmp_j; ; for (__gmp_j = (1); __gmp_j < (__gmp_size); __gmp_j++) (__gmp_dst)[__gmp_j] = (__gmp_src)[__gmp_j]; } while (0); (__gmp_c) = 0; } } while (0);
+  return __gmp_c;
+}
+
+
+
+
+extern __inline__
+
+int
+__gmpn_cmp (mp_srcptr __gmp_xp, mp_srcptr __gmp_yp, mp_size_t __gmp_size)
+{
+  int __gmp_result;
+  do { mp_size_t __gmp_i; mp_limb_t __gmp_x, __gmp_y; (__gmp_result) = 0; __gmp_i = (__gmp_size); while (--__gmp_i >= 0) { __gmp_x = (__gmp_xp)[__gmp_i]; __gmp_y = (__gmp_yp)[__gmp_i]; if (__gmp_x != __gmp_y) { (__gmp_result) = (__gmp_x > __gmp_y ? 1 : -1); break; } } } while (0);
+  return __gmp_result;
+}
+
+
+
+
+extern __inline__
+
+mp_limb_t
+__gmpn_sub (mp_ptr __gmp_wp, mp_srcptr __gmp_xp, mp_size_t __gmp_xsize, mp_srcptr __gmp_yp, mp_size_t __gmp_ysize)
+{
+  mp_limb_t __gmp_c;
+  do { mp_size_t __gmp_i; mp_limb_t __gmp_x; __gmp_i = (__gmp_ysize); if (__gmp_i != 0) { if (__gmpn_sub_n (__gmp_wp, __gmp_xp, __gmp_yp, __gmp_i)) { do { if (__gmp_i >= (__gmp_xsize)) { (__gmp_c) = 1; goto __gmp_done; } __gmp_x = (__gmp_xp)[__gmp_i]; } while ((((__gmp_wp)[__gmp_i++] = (__gmp_x - 1) & ((~ ((mp_limb_t) (0))) >> 0)), __gmp_x == 0)); } } if ((__gmp_wp) != (__gmp_xp)) do { mp_size_t __gmp_j; ; for (__gmp_j = (__gmp_i); __gmp_j < (__gmp_xsize); __gmp_j++) (__gmp_wp)[__gmp_j] = (__gmp_xp)[__gmp_j]; } while (0); (__gmp_c) = 0; __gmp_done: ; } while (0);
+  return __gmp_c;
+}
+
+
+
+
+extern __inline__
+
+mp_limb_t
+__gmpn_sub_1 (mp_ptr __gmp_dst, mp_srcptr __gmp_src, mp_size_t __gmp_size, mp_limb_t __gmp_n)
+{
+  mp_limb_t __gmp_c;
+  do { mp_size_t __gmp_i; mp_limb_t __gmp_x, __gmp_r; __gmp_x = (__gmp_src)[0]; __gmp_r = __gmp_x - (__gmp_n); (__gmp_dst)[0] = __gmp_r; if (((__gmp_x) < ((__gmp_n)))) { (__gmp_c) = 1; for (__gmp_i = 1; __gmp_i < (__gmp_size);) { __gmp_x = (__gmp_src)[__gmp_i]; __gmp_r = __gmp_x - 1; (__gmp_dst)[__gmp_i] = __gmp_r; ++__gmp_i; if (!((__gmp_x) < (1))) { if ((__gmp_src) != (__gmp_dst)) do { mp_size_t __gmp_j; ; for (__gmp_j = (__gmp_i); __gmp_j < (__gmp_size); __gmp_j++) (__gmp_dst)[__gmp_j] = (__gmp_src)[__gmp_j]; } while (0); (__gmp_c) = 0; break; } } } else { if ((__gmp_src) != (__gmp_dst)) do { mp_size_t __gmp_j; ; for (__gmp_j = (1); __gmp_j < (__gmp_size); __gmp_j++) (__gmp_dst)[__gmp_j] = (__gmp_src)[__gmp_j]; } while (0); (__gmp_c) = 0; } } while (0);
+  return __gmp_c;
+}
+# 2166 "/usr/include/gmp.h" 3 4
+enum
+{
+  GMP_ERROR_NONE = 0,
+  GMP_ERROR_UNSUPPORTED_ARGUMENT = 1,
+  GMP_ERROR_DIVISION_BY_ZERO = 2,
+  GMP_ERROR_SQRT_OF_NEGATIVE = 4,
+  GMP_ERROR_INVALID_ARGUMENT = 8
+};
+# 25 "double-int.h" 2
+
+# 1 "coretypes.h" 1
+# 39 "coretypes.h"
+struct bitmap_head_def;
+typedef struct bitmap_head_def *bitmap;
+typedef const struct bitmap_head_def *const_bitmap;
+struct rtx_def;
+typedef struct rtx_def *rtx;
+typedef const struct rtx_def *const_rtx;
+struct rtvec_def;
+typedef struct rtvec_def *rtvec;
+typedef const struct rtvec_def *const_rtvec;
+union tree_node;
+typedef union tree_node *tree;
+typedef const union tree_node *const_tree;
+union section;
+typedef union section section;
+
+
+enum ir_type {
+  IR_GIMPLE,
+  IR_RTL_CFGRTL,
+  IR_RTL_CFGLAYOUT
+};
+
+
+
+
+
+struct cpp_reader;
+
+
+
+
+enum tls_model {
+  TLS_MODEL_NONE,
+  TLS_MODEL_GLOBAL_DYNAMIC,
+  TLS_MODEL_LOCAL_DYNAMIC,
+  TLS_MODEL_INITIAL_EXEC,
+  TLS_MODEL_LOCAL_EXEC
+};
+# 27 "double-int.h" 2
+# 54 "double-int.h"
+typedef struct
+{
+  unsigned HOST_WIDE_INT low;
+  HOST_WIDE_INT high;
+} double_int;
+
+union tree_node;
+
+
+
+union tree_node *double_int_to_tree (union tree_node *, double_int);
+bool double_int_fits_to_tree_p (const union tree_node *, double_int);
+double_int tree_to_double_int (const union tree_node *);
+
+
+
+
+static __inline__ double_int
+shwi_to_double_int (HOST_WIDE_INT cst)
+{
+  double_int r;
+
+  r.low = (unsigned HOST_WIDE_INT) cst;
+  r.high = cst < 0 ? -1 : 0;
+
+  return r;
+}
+# 93 "double-int.h"
+static __inline__ double_int
+uhwi_to_double_int (unsigned HOST_WIDE_INT cst)
+{
+  double_int r;
+
+  r.low = cst;
+  r.high = 0;
+
+  return r;
+}
+
+
+
+
+
+
+double_int double_int_mul (double_int, double_int);
+double_int double_int_add (double_int, double_int);
+double_int double_int_neg (double_int);
+
+
+
+
+bool double_int_fits_in_hwi_p (double_int, bool);
+bool double_int_fits_in_shwi_p (double_int);
+bool double_int_fits_in_uhwi_p (double_int);
+HOST_WIDE_INT double_int_to_shwi (double_int);
+unsigned HOST_WIDE_INT double_int_to_uhwi (double_int);
+double_int double_int_div (double_int, double_int, bool, unsigned);
+double_int double_int_sdiv (double_int, double_int, unsigned);
+double_int double_int_udiv (double_int, double_int, unsigned);
+double_int double_int_mod (double_int, double_int, bool, unsigned);
+double_int double_int_smod (double_int, double_int, unsigned);
+double_int double_int_umod (double_int, double_int, unsigned);
+double_int double_int_divmod (double_int, double_int, bool, unsigned, double_int *);
+double_int double_int_sdivmod (double_int, double_int, unsigned, double_int *);
+double_int double_int_udivmod (double_int, double_int, unsigned, double_int *);
+bool double_int_negative_p (double_int);
+int double_int_cmp (double_int, double_int, bool);
+int double_int_scmp (double_int, double_int);
+int double_int_ucmp (double_int, double_int);
+void dump_double_int (FILE *, double_int, bool);
+
+
+
+double_int double_int_ext (double_int, unsigned, bool);
+double_int double_int_sext (double_int, unsigned);
+double_int double_int_zext (double_int, unsigned);
+double_int double_int_mask (unsigned);
+# 151 "double-int.h"
+static __inline__ bool
+double_int_zero_p (double_int cst)
+{
+  return cst.low == 0 && cst.high == 0;
+}
+
+
+
+static __inline__ bool
+double_int_one_p (double_int cst)
+{
+  return cst.low == 1 && cst.high == 0;
+}
+
+
+
+static __inline__ bool
+double_int_minus_one_p (double_int cst)
+{
+  return (cst.low == (~((unsigned HOST_WIDE_INT) 0)) && cst.high == -1);
+}
+
+
+
+static __inline__ bool
+double_int_equal_p (double_int cst1, double_int cst2)
+{
+  return cst1.low == cst2.low && cst1.high == cst2.high;
+}
+
+
+
+
+void mpz_set_double_int (mpz_t, double_int, bool);
+double_int mpz_get_double_int (const_tree, mpz_t, bool);
+# 31 "tree.h" 2
+# 1 "alias.h" 1
+# 24 "alias.h"
+typedef HOST_WIDE_INT alias_set_type;
+
+extern alias_set_type new_alias_set (void);
+extern alias_set_type get_varargs_alias_set (void);
+extern alias_set_type get_frame_alias_set (void);
+extern bool component_uses_parent_alias_set (const_tree);
+extern bool alias_set_subset_of (alias_set_type, alias_set_type);
+# 32 "tree.h" 2
+
+
+
+
+
+enum tree_code {
+# 1 "tree.def" 1
+# 42 "tree.def"
+ERROR_MARK,
+
+
+
+
+
+IDENTIFIER_NODE,
+
+
+
+
+
+
+TREE_LIST,
+
+
+TREE_VEC,
+# 79 "tree.def"
+BLOCK,
+# 133 "tree.def"
+OFFSET_TYPE,
+# 146 "tree.def"
+ENUMERAL_TYPE,
+
+
+
+BOOLEAN_TYPE,
+# 160 "tree.def"
+INTEGER_TYPE,
+
+
+
+REAL_TYPE,
+# 173 "tree.def"
+POINTER_TYPE,
+
+
+
+
+FIXED_POINT_TYPE,
+
+
+
+REFERENCE_TYPE,
+
+
+
+
+
+
+
+COMPLEX_TYPE,
+
+
+
+
+VECTOR_TYPE,
+# 211 "tree.def"
+ARRAY_TYPE,
+# 221 "tree.def"
+RECORD_TYPE,
+
+
+
+
+
+UNION_TYPE,
+
+
+
+
+
+QUAL_UNION_TYPE,
+
+
+
+
+
+
+VOID_TYPE,
+
+
+
+
+
+
+
+FUNCTION_TYPE,
+
+
+
+
+
+
+METHOD_TYPE,
+
+
+
+
+
+LANG_TYPE,
+# 275 "tree.def"
+INTEGER_CST,
+
+
+REAL_CST,
+
+
+FIXED_CST,
+
+
+
+COMPLEX_CST,
+
+
+VECTOR_CST,
+
+
+STRING_CST,
+# 351 "tree.def"
+FUNCTION_DECL,
+LABEL_DECL,
+
+
+
+
+FIELD_DECL,
+VAR_DECL,
+CONST_DECL,
+PARM_DECL,
+TYPE_DECL,
+RESULT_DECL,
+
+
+
+STRUCT_FIELD_TAG,
+NAME_MEMORY_TAG,
+SYMBOL_MEMORY_TAG,
+MEMORY_PARTITION_TAG,
+
+
+
+NAMESPACE_DECL,
+
+
+
+TRANSLATION_UNIT_DECL,
+# 387 "tree.def"
+COMPONENT_REF,
+# 396 "tree.def"
+BIT_FIELD_REF,
+
+
+
+
+
+
+INDIRECT_REF,
+
+
+
+ALIGN_INDIRECT_REF,
+
+
+
+
+
+
+MISALIGNED_INDIRECT_REF,
+
+
+
+
+
+
+ARRAY_REF,
+
+
+
+
+ARRAY_RANGE_REF,
+# 438 "tree.def"
+OBJ_TYPE_REF,
+
+
+EXC_PTR_EXPR,
+
+
+FILTER_EXPR,
+# 460 "tree.def"
+CONSTRUCTOR,
+# 470 "tree.def"
+COMPOUND_EXPR,
+
+
+MODIFY_EXPR,
+
+
+
+
+INIT_EXPR,
+
+
+
+
+
+
+
+TARGET_EXPR,
+# 497 "tree.def"
+COND_EXPR,
+# 509 "tree.def"
+VEC_COND_EXPR,
+# 532 "tree.def"
+BIND_EXPR,
+
+
+
+
+
+
+
+CALL_EXPR,
+
+
+
+
+
+
+WITH_CLEANUP_EXPR,
+# 564 "tree.def"
+CLEANUP_POINT_EXPR,
+# 616 "tree.def"
+PLACEHOLDER_EXPR,
+
+
+PLUS_EXPR,
+MINUS_EXPR,
+MULT_EXPR,
+
+
+
+POINTER_PLUS_EXPR,
+
+
+TRUNC_DIV_EXPR,
+
+
+CEIL_DIV_EXPR,
+
+
+FLOOR_DIV_EXPR,
+
+
+ROUND_DIV_EXPR,
+
+
+TRUNC_MOD_EXPR,
+CEIL_MOD_EXPR,
+FLOOR_MOD_EXPR,
+ROUND_MOD_EXPR,
+
+
+RDIV_EXPR,
+
+
+
+EXACT_DIV_EXPR,
+
+
+FIX_TRUNC_EXPR,
+
+
+FLOAT_EXPR,
+
+
+NEGATE_EXPR,
+
+
+
+
+MIN_EXPR,
+MAX_EXPR,
+
+
+
+
+
+ABS_EXPR,
+# 680 "tree.def"
+LSHIFT_EXPR,
+RSHIFT_EXPR,
+LROTATE_EXPR,
+RROTATE_EXPR,
+
+
+BIT_IOR_EXPR,
+BIT_XOR_EXPR,
+BIT_AND_EXPR,
+BIT_NOT_EXPR,
+# 700 "tree.def"
+TRUTH_ANDIF_EXPR,
+TRUTH_ORIF_EXPR,
+TRUTH_AND_EXPR,
+TRUTH_OR_EXPR,
+TRUTH_XOR_EXPR,
+TRUTH_NOT_EXPR,
+
+
+
+
+
+
+
+LT_EXPR,
+LE_EXPR,
+GT_EXPR,
+GE_EXPR,
+EQ_EXPR,
+NE_EXPR,
+
+
+UNORDERED_EXPR,
+ORDERED_EXPR,
+
+
+UNLT_EXPR,
+UNLE_EXPR,
+UNGT_EXPR,
+UNGE_EXPR,
+UNEQ_EXPR,
+
+
+LTGT_EXPR,
+
+RANGE_EXPR,
+
+
+
+
+CONVERT_EXPR,
+
+
+
+
+FIXED_CONVERT_EXPR,
+
+
+NOP_EXPR,
+
+
+NON_LVALUE_EXPR,
+# 762 "tree.def"
+VIEW_CONVERT_EXPR,
+
+
+
+
+SAVE_EXPR,
+
+
+
+ADDR_EXPR,
+
+
+
+FDESC_EXPR,
+
+
+
+COMPLEX_EXPR,
+
+
+CONJ_EXPR,
+
+
+
+REALPART_EXPR,
+IMAGPART_EXPR,
+
+
+
+
+PREDECREMENT_EXPR,
+PREINCREMENT_EXPR,
+POSTDECREMENT_EXPR,
+POSTINCREMENT_EXPR,
+
+
+VA_ARG_EXPR,
+
+
+
+
+
+
+TRY_CATCH_EXPR,
+
+
+
+
+TRY_FINALLY_EXPR,
+
+
+
+
+
+DECL_EXPR,
+
+
+
+
+LABEL_EXPR,
+
+
+
+GOTO_EXPR,
+
+
+
+
+
+
+RETURN_EXPR,
+
+
+
+EXIT_EXPR,
+
+
+
+
+LOOP_EXPR,
+# 855 "tree.def"
+SWITCH_EXPR,
+
+
+
+
+
+CASE_LABEL_EXPR,
+
+
+
+RESX_EXPR,
+
+
+
+
+
+ASM_EXPR,
+
+
+
+
+SSA_NAME,
+
+
+
+
+
+
+
+PHI_NODE,
+
+
+
+CATCH_EXPR,
+
+
+
+
+
+EH_FILTER_EXPR,
+
+
+
+
+
+
+
+CHANGE_DYNAMIC_TYPE_EXPR,
+
+
+
+
+SCEV_KNOWN,
+
+
+
+SCEV_NOT_KNOWN,
+
+
+
+POLYNOMIAL_CHREC,
+
+
+
+STATEMENT_LIST,
+
+
+
+
+
+VALUE_HANDLE,
+# 939 "tree.def"
+ASSERT_EXPR,
+
+
+
+TREE_BINFO,
+
+
+
+
+
+
+WITH_SIZE_EXPR,
+# 961 "tree.def"
+REALIGN_LOAD_EXPR,
+# 976 "tree.def"
+TARGET_MEM_REF,
+# 990 "tree.def"
+OMP_PARALLEL,
+# 1011 "tree.def"
+OMP_FOR,
+
+
+
+
+
+
+OMP_SECTIONS,
+
+
+
+OMP_SECTIONS_SWITCH,
+
+
+
+
+OMP_SINGLE,
+
+
+
+OMP_SECTION,
+
+
+
+OMP_MASTER,
+
+
+
+OMP_ORDERED,
+
+
+
+
+OMP_CRITICAL,
+
+
+OMP_RETURN,
+
+
+
+
+OMP_CONTINUE,
+
+
+
+
+
+
+
+OMP_ATOMIC,
+# 1071 "tree.def"
+OMP_ATOMIC_LOAD,
+OMP_ATOMIC_STORE,
+
+
+OMP_CLAUSE,
+
+
+
+
+
+
+
+REDUC_MAX_EXPR,
+REDUC_MIN_EXPR,
+REDUC_PLUS_EXPR,
+# 1096 "tree.def"
+DOT_PROD_EXPR,
+# 1105 "tree.def"
+WIDEN_SUM_EXPR,
+
+
+
+
+
+
+WIDEN_MULT_EXPR,
+
+
+
+
+VEC_LSHIFT_EXPR,
+VEC_RSHIFT_EXPR,
+
+
+
+
+GIMPLE_MODIFY_STMT,
+
+
+
+
+
+
+VEC_WIDEN_MULT_HI_EXPR,
+VEC_WIDEN_MULT_LO_EXPR,
+
+
+
+
+
+VEC_UNPACK_HI_EXPR,
+VEC_UNPACK_LO_EXPR,
+
+
+
+
+
+VEC_UNPACK_FLOAT_HI_EXPR,
+VEC_UNPACK_FLOAT_LO_EXPR,
+
+
+
+
+
+VEC_PACK_TRUNC_EXPR,
+VEC_PACK_SAT_EXPR,
+
+
+
+
+
+VEC_PACK_FIX_TRUNC_EXPR,
+
+
+VEC_EXTRACT_EVEN_EXPR,
+VEC_EXTRACT_ODD_EXPR,
+
+
+VEC_INTERLEAVE_HIGH_EXPR,
+VEC_INTERLEAVE_LOW_EXPR,
+# 39 "tree.h" 2
+
+  LAST_AND_UNUSED_TREE_CODE
+
+};
+
+
+
+
+extern unsigned char tree_contains_struct[512][64];
+# 58 "tree.h"
+enum tree_code_class {
+  tcc_exceptional,
+  tcc_constant,
+
+  tcc_type,
+  tcc_declaration,
+  tcc_reference,
+  tcc_comparison,
+  tcc_unary,
+  tcc_binary,
+  tcc_statement,
+
+  tcc_vl_exp,
+
+  tcc_expression,
+  tcc_gimple_stmt
+};
+
+
+
+
+extern const char *const tree_code_class_strings[];
+
+
+
+
+
+
+extern const enum tree_code_class tree_code_type[];
+# 205 "tree.h"
+extern const unsigned char tree_code_length[];
+
+
+
+
+extern const char *const tree_code_name[];
+
+
+static __inline__ void VEC_tree_must_be_pointer_type (void) { (void)((tree)1 == (void *)1); } typedef struct VEC_tree_base { unsigned num; unsigned alloc; tree vec[1]; } VEC_tree_base; typedef struct VEC_tree_none { VEC_tree_base base; } VEC_tree_none; static __inline__ unsigned VEC_tree_base_length (const VEC_tree_base *vec_) { return vec_ ? vec_->num : 0; } static __inline__ tree VEC_tree_base_last (const VEC_tree_base *vec_ ) { (void)(vec_ && vec_->num); return vec_->vec[vec_->num - 1]; } static __inline__ tree VEC_tree_base_index (const VEC_tree_base *vec_, unsigned ix_ ) { (void)(vec_ && ix_ < vec_->num); return vec_->vec[ix_]; } static __inline__ int VEC_tree_base_iterate (const VEC_tree_base *vec_, unsigned ix_, tree *ptr) { if (vec_ && ix_ < vec_->num) { *ptr = vec_->vec[ix_]; return 1; } else { *ptr = 0; return 0; } } static __inline__ size_t VEC_tree_base_embedded_size (int alloc_) { return offsetof (VEC_tree_base,vec) + alloc_ * sizeof(tree); } static __inline__ void VEC_tree_base_embedded_init (VEC_tree_base *vec_, int alloc_) { vec_->num = 0; vec_->alloc = alloc_; } static __inline__ int VEC_tree_base_space (VEC_tree_base *vec_, int alloc_ ) { (void)(alloc_ >= 0); return vec_ ? vec_->alloc - vec_->num >= (unsigned)alloc_ : !alloc_; } static __inline__ tree *VEC_tree_base_quick_push (VEC_tree_base *vec_, tree obj_ ) { tree *slot_; (void)(vec_->num < vec_->alloc); slot_ = &vec_->vec[vec_->num++]; *slot_ = obj_; return slot_; } static __inline__ tree VEC_tree_base_pop (VEC_tree_base *vec_ ) { tree obj_; (void)(vec_->num); obj_ = vec_->vec[--vec_->num]; return obj_; } static __inline__ void VEC_tree_base_truncate (VEC_tree_base *vec_, unsigned size_ ) { (void)(vec_ ? vec_->num >= size_ : !size_); if (vec_) vec_->num = size_; } static __inline__ tree VEC_tree_base_replace (VEC_tree_base *vec_, unsigned ix_, tree obj_ ) { tree old_obj_; (void)(ix_ < vec_->num); old_obj_ = vec_->vec[ix_]; vec_->vec[ix_] = obj_; return old_obj_; } static __inline__ tree *VEC_tree_base_quick_insert (VEC_tree_base *vec_, unsigned ix_, tree obj_ ) { tree *slot_; (void)(vec_->num < vec_->alloc); (void)(ix_ <= vec_->num); slot_ = &vec_->vec[ix_]; memmove (slot_ + 1, slot_, (vec_->num++ - ix_) * sizeof (tree)); *slot_ = obj_; return slot_; } static __inline__ tree VEC_tree_base_ordered_remove (VEC_tree_base *vec_, unsigned ix_ ) { tree *slot_; tree obj_; (void)(ix_ < vec_->num); slot_ = &vec_->vec[ix_]; obj_ = *slot_; memmove (slot_, slot_ + 1, (--vec_->num - ix_) * sizeof (tree)); return obj_; } static __inline__ tree VEC_tree_base_unordered_remove (VEC_tree_base *vec_, unsigned ix_ ) { tree *slot_; tree obj_; (void)(ix_ < vec_->num); slot_ = &vec_->vec[ix_]; obj_ = *slot_; *slot_ = vec_->vec[--vec_->num]; return obj_; } static __inline__ void VEC_tree_base_block_remove (VEC_tree_base *vec_, unsigned ix_, unsigned len_ ) { tree *slot_; (void)(ix_ + len_ <= vec_->num); slot_ = &vec_->vec[ix_]; vec_->num -= len_; memmove (slot_, slot_ + len_, (vec_->num - ix_) * sizeof (tree)); } static __inline__ tree *VEC_tree_base_address (VEC_tree_base *vec_) { return vec_ ? vec_->vec : 0; } static __inline__ unsigned VEC_tree_base_lower_bound (VEC_tree_base *vec_, const tree obj_, bool (*lessthan_)(const tree, const tree) ) { unsigned int len_ = VEC_tree_base_length (vec_); unsigned int half_, middle_; unsigned int first_ = 0; while (len_ > 0) { tree middle_elem_; half_ = len_ >> 1; middle_ = first_; middle_ += half_; middle_elem_ = VEC_tree_base_index (vec_, middle_ ); if (lessthan_ (middle_elem_, obj_)) { first_ = middle_; ++first_; len_ = len_ - half_ - 1; } else len_ = half_; } return first_; } struct vec_swallow_trailing_semi;
+typedef struct VEC_tree_gc { VEC_tree_base base; } VEC_tree_gc; static __inline__ VEC_tree_gc *VEC_tree_gc_alloc (int alloc_ ) { return (VEC_tree_gc *) vec_gc_p_reserve_exact (NULL, alloc_ ); } static __inline__ void VEC_tree_gc_free (VEC_tree_gc **vec_) { if (*vec_) ggc_free (*vec_); *vec_ = NULL; } static __inline__ VEC_tree_gc *VEC_tree_gc_copy (VEC_tree_base *vec_ ) { size_t len_ = vec_ ? vec_->num : 0; VEC_tree_gc *new_vec_ = NULL; if (len_) { new_vec_ = (VEC_tree_gc *)(vec_gc_p_reserve_exact (NULL, len_ )); new_vec_->base.num = len_; memcpy (new_vec_->base.vec, vec_->vec, sizeof (tree) * len_); } return new_vec_; } static __inline__ int VEC_tree_gc_reserve (VEC_tree_gc **vec_, int alloc_ ) { int extend = !VEC_tree_base_space (((*vec_) ? &(*vec_)->base : 0), alloc_ ); if (extend) *vec_ = (VEC_tree_gc *) vec_gc_p_reserve (*vec_, alloc_ ); return extend; } static __inline__ int VEC_tree_gc_reserve_exact (VEC_tree_gc **vec_, int alloc_ ) { int extend = !VEC_tree_base_space (((*vec_) ? &(*vec_)->base : 0), alloc_ ); if (extend) *vec_ = (VEC_tree_gc *) vec_gc_p_reserve_exact (*vec_, alloc_ ); return extend; } static __inline__ void VEC_tree_gc_safe_grow (VEC_tree_gc **vec_, int size_ ) { (void)(size_ >= 0 && VEC_tree_base_length ((*vec_) ? &(*vec_)->base : 0) <= (unsigned)size_); VEC_tree_gc_reserve_exact (vec_, size_ - (int)(*vec_ ? ((*vec_) ? &(*vec_)->base : 0)->num : 0) ); ((*vec_) ? &(*vec_)->base : 0)->num = size_; } static __inline__ void VEC_tree_gc_safe_grow_cleared (VEC_tree_gc **vec_, int size_ ) { int oldsize = VEC_tree_base_length ((*vec_) ? &(*vec_)->base : 0); VEC_tree_gc_safe_grow (vec_, size_ ); memset (&(VEC_tree_base_address ((*vec_) ? &(*vec_)->base : 0))[oldsize], 0, sizeof (tree) * (size_ - oldsize)); } static __inline__ tree *VEC_tree_gc_safe_push (VEC_tree_gc **vec_, tree obj_ ) { VEC_tree_gc_reserve (vec_, 1 ); return VEC_tree_base_quick_push (((*vec_) ? &(*vec_)->base : 0), obj_ ); } static __inline__ tree *VEC_tree_gc_safe_insert (VEC_tree_gc **vec_, unsigned ix_, tree obj_ ) { VEC_tree_gc_reserve (vec_, 1 ); return VEC_tree_base_quick_insert (((*vec_) ? &(*vec_)->base : 0), ix_, obj_ ); } struct vec_swallow_trailing_semi;
+typedef struct VEC_tree_heap { VEC_tree_base base; } VEC_tree_heap; static __inline__ VEC_tree_heap *VEC_tree_heap_alloc (int alloc_ ) { return (VEC_tree_heap *) vec_heap_p_reserve_exact (NULL, alloc_ ); } static __inline__ void VEC_tree_heap_free (VEC_tree_heap **vec_) { if (*vec_) free (*vec_); *vec_ = NULL; } static __inline__ VEC_tree_heap *VEC_tree_heap_copy (VEC_tree_base *vec_ ) { size_t len_ = vec_ ? vec_->num : 0; VEC_tree_heap *new_vec_ = NULL; if (len_) { new_vec_ = (VEC_tree_heap *)(vec_heap_p_reserve_exact (NULL, len_ )); new_vec_->base.num = len_; memcpy (new_vec_->base.vec, vec_->vec, sizeof (tree) * len_); } return new_vec_; } static __inline__ int VEC_tree_heap_reserve (VEC_tree_heap **vec_, int alloc_ ) { int extend = !VEC_tree_base_space (((*vec_) ? &(*vec_)->base : 0), alloc_ ); if (extend) *vec_ = (VEC_tree_heap *) vec_heap_p_reserve (*vec_, alloc_ ); return extend; } static __inline__ int VEC_tree_heap_reserve_exact (VEC_tree_heap **vec_, int alloc_ ) { int extend = !VEC_tree_base_space (((*vec_) ? &(*vec_)->base : 0), alloc_ ); if (extend) *vec_ = (VEC_tree_heap *) vec_heap_p_reserve_exact (*vec_, alloc_ ); return extend; } static __inline__ void VEC_tree_heap_safe_grow (VEC_tree_heap **vec_, int size_ ) { (void)(size_ >= 0 && VEC_tree_base_length ((*vec_) ? &(*vec_)->base : 0) <= (unsigned)size_); VEC_tree_heap_reserve_exact (vec_, size_ - (int)(*vec_ ? ((*vec_) ? &(*vec_)->base : 0)->num : 0) ); ((*vec_) ? &(*vec_)->base : 0)->num = size_; } static __inline__ void VEC_tree_heap_safe_grow_cleared (VEC_tree_heap **vec_, int size_ ) { int oldsize = VEC_tree_base_length ((*vec_) ? &(*vec_)->base : 0); VEC_tree_heap_safe_grow (vec_, size_ ); memset (&(VEC_tree_base_address ((*vec_) ? &(*vec_)->base : 0))[oldsize], 0, sizeof (tree) * (size_ - oldsize)); } static __inline__ tree *VEC_tree_heap_safe_push (VEC_tree_heap **vec_, tree obj_ ) { VEC_tree_heap_reserve (vec_, 1 ); return VEC_tree_base_quick_push (((*vec_) ? &(*vec_)->base : 0), obj_ ); } static __inline__ tree *VEC_tree_heap_safe_insert (VEC_tree_heap **vec_, unsigned ix_, tree obj_ ) { VEC_tree_heap_reserve (vec_, 1 ); return VEC_tree_base_quick_insert (((*vec_) ? &(*vec_)->base : 0), ix_, obj_ ); } struct vec_swallow_trailing_semi;
+
+
+
+
+enum built_in_class
+{
+  NOT_BUILT_IN = 0,
+  BUILT_IN_FRONTEND,
+  BUILT_IN_MD,
+  BUILT_IN_NORMAL
+};
+
+
+extern const char *const built_in_class_names[4];
+
+
+
+
+
+enum built_in_function
+{
+# 1 "builtins.def" 1
+# 177 "builtins.def"
+BUILT_IN_ACOS,
+BUILT_IN_ACOSF,
+BUILT_IN_ACOSH,
+BUILT_IN_ACOSHF,
+BUILT_IN_ACOSHL,
+BUILT_IN_ACOSL,
+BUILT_IN_ASIN,
+BUILT_IN_ASINF,
+BUILT_IN_ASINH,
+BUILT_IN_ASINHF,
+BUILT_IN_ASINHL,
+BUILT_IN_ASINL,
+BUILT_IN_ATAN,
+BUILT_IN_ATAN2,
+BUILT_IN_ATAN2F,
+BUILT_IN_ATAN2L,
+BUILT_IN_ATANF,
+BUILT_IN_ATANH,
+BUILT_IN_ATANHF,
+BUILT_IN_ATANHL,
+BUILT_IN_ATANL,
+BUILT_IN_CBRT,
+BUILT_IN_CBRTF,
+BUILT_IN_CBRTL,
+BUILT_IN_CEIL,
+BUILT_IN_CEILF,
+BUILT_IN_CEILL,
+BUILT_IN_COPYSIGN,
+BUILT_IN_COPYSIGNF,
+BUILT_IN_COPYSIGNL,
+BUILT_IN_COS,
+BUILT_IN_COSF,
+BUILT_IN_COSH,
+BUILT_IN_COSHF,
+BUILT_IN_COSHL,
+BUILT_IN_COSL,
+BUILT_IN_DREM,
+BUILT_IN_DREMF,
+BUILT_IN_DREML,
+BUILT_IN_ERF,
+BUILT_IN_ERFC,
+BUILT_IN_ERFCF,
+BUILT_IN_ERFCL,
+BUILT_IN_ERFF,
+BUILT_IN_ERFL,
+BUILT_IN_EXP,
+BUILT_IN_EXP10,
+BUILT_IN_EXP10F,
+BUILT_IN_EXP10L,
+BUILT_IN_EXP2,
+BUILT_IN_EXP2F,
+BUILT_IN_EXP2L,
+BUILT_IN_EXPF,
+BUILT_IN_EXPL,
+BUILT_IN_EXPM1,
+BUILT_IN_EXPM1F,
+BUILT_IN_EXPM1L,
+BUILT_IN_FABS,
+BUILT_IN_FABSF,
+BUILT_IN_FABSL,
+BUILT_IN_FDIM,
+BUILT_IN_FDIMF,
+BUILT_IN_FDIML,
+BUILT_IN_FLOOR,
+BUILT_IN_FLOORF,
+BUILT_IN_FLOORL,
+BUILT_IN_FMA,
+BUILT_IN_FMAF,
+BUILT_IN_FMAL,
+BUILT_IN_FMAX,
+BUILT_IN_FMAXF,
+BUILT_IN_FMAXL,
+BUILT_IN_FMIN,
+BUILT_IN_FMINF,
+BUILT_IN_FMINL,
+BUILT_IN_FMOD,
+BUILT_IN_FMODF,
+BUILT_IN_FMODL,
+BUILT_IN_FREXP,
+BUILT_IN_FREXPF,
+BUILT_IN_FREXPL,
+BUILT_IN_GAMMA,
+BUILT_IN_GAMMAF,
+BUILT_IN_GAMMAL,
+BUILT_IN_GAMMA_R,
+BUILT_IN_GAMMAF_R,
+BUILT_IN_GAMMAL_R,
+BUILT_IN_HUGE_VAL,
+BUILT_IN_HUGE_VALF,
+BUILT_IN_HUGE_VALL,
+BUILT_IN_HYPOT,
+BUILT_IN_HYPOTF,
+BUILT_IN_HYPOTL,
+BUILT_IN_ILOGB,
+BUILT_IN_ILOGBF,
+BUILT_IN_ILOGBL,
+BUILT_IN_INF,
+BUILT_IN_INFF,
+BUILT_IN_INFL,
+BUILT_IN_INFD32,
+BUILT_IN_INFD64,
+BUILT_IN_INFD128,
+BUILT_IN_J0,
+BUILT_IN_J0F,
+BUILT_IN_J0L,
+BUILT_IN_J1,
+BUILT_IN_J1F,
+BUILT_IN_J1L,
+BUILT_IN_JN,
+BUILT_IN_JNF,
+BUILT_IN_JNL,
+BUILT_IN_LCEIL,
+BUILT_IN_LCEILF,
+BUILT_IN_LCEILL,
+BUILT_IN_LDEXP,
+BUILT_IN_LDEXPF,
+BUILT_IN_LDEXPL,
+BUILT_IN_LFLOOR,
+BUILT_IN_LFLOORF,
+BUILT_IN_LFLOORL,
+BUILT_IN_LGAMMA,
+BUILT_IN_LGAMMAF,
+BUILT_IN_LGAMMAL,
+BUILT_IN_LGAMMA_R,
+BUILT_IN_LGAMMAF_R,
+BUILT_IN_LGAMMAL_R,
+BUILT_IN_LLCEIL,
+BUILT_IN_LLCEILF,
+BUILT_IN_LLCEILL,
+BUILT_IN_LLFLOOR,
+BUILT_IN_LLFLOORF,
+BUILT_IN_LLFLOORL,
+BUILT_IN_LLRINT,
+BUILT_IN_LLRINTF,
+BUILT_IN_LLRINTL,
+BUILT_IN_LLROUND,
+BUILT_IN_LLROUNDF,
+BUILT_IN_LLROUNDL,
+BUILT_IN_LOG,
+BUILT_IN_LOG10,
+BUILT_IN_LOG10F,
+BUILT_IN_LOG10L,
+BUILT_IN_LOG1P,
+BUILT_IN_LOG1PF,
+BUILT_IN_LOG1PL,
+BUILT_IN_LOG2,
+BUILT_IN_LOG2F,
+BUILT_IN_LOG2L,
+BUILT_IN_LOGB,
+BUILT_IN_LOGBF,
+BUILT_IN_LOGBL,
+BUILT_IN_LOGF,
+BUILT_IN_LOGL,
+BUILT_IN_LRINT,
+BUILT_IN_LRINTF,
+BUILT_IN_LRINTL,
+BUILT_IN_LROUND,
+BUILT_IN_LROUNDF,
+BUILT_IN_LROUNDL,
+BUILT_IN_MODF,
+BUILT_IN_MODFF,
+BUILT_IN_MODFL,
+BUILT_IN_NAN,
+BUILT_IN_NANF,
+BUILT_IN_NANL,
+BUILT_IN_NAND32,
+BUILT_IN_NAND64,
+BUILT_IN_NAND128,
+BUILT_IN_NANS,
+BUILT_IN_NANSF,
+BUILT_IN_NANSL,
+BUILT_IN_NEARBYINT,
+BUILT_IN_NEARBYINTF,
+BUILT_IN_NEARBYINTL,
+BUILT_IN_NEXTAFTER,
+BUILT_IN_NEXTAFTERF,
+BUILT_IN_NEXTAFTERL,
+BUILT_IN_NEXTTOWARD,
+BUILT_IN_NEXTTOWARDF,
+BUILT_IN_NEXTTOWARDL,
+BUILT_IN_POW,
+BUILT_IN_POW10,
+BUILT_IN_POW10F,
+BUILT_IN_POW10L,
+BUILT_IN_POWF,
+BUILT_IN_POWI,
+BUILT_IN_POWIF,
+BUILT_IN_POWIL,
+BUILT_IN_POWL,
+BUILT_IN_REMAINDER,
+BUILT_IN_REMAINDERF,
+BUILT_IN_REMAINDERL,
+BUILT_IN_REMQUO,
+BUILT_IN_REMQUOF,
+BUILT_IN_REMQUOL,
+BUILT_IN_RINT,
+BUILT_IN_RINTF,
+BUILT_IN_RINTL,
+BUILT_IN_ROUND,
+BUILT_IN_ROUNDF,
+BUILT_IN_ROUNDL,
+BUILT_IN_SCALB,
+BUILT_IN_SCALBF,
+BUILT_IN_SCALBL,
+BUILT_IN_SCALBLN,
+BUILT_IN_SCALBLNF,
+BUILT_IN_SCALBLNL,
+BUILT_IN_SCALBN,
+BUILT_IN_SCALBNF,
+BUILT_IN_SCALBNL,
+BUILT_IN_SIGNBIT,
+BUILT_IN_SIGNBITF,
+BUILT_IN_SIGNBITL,
+BUILT_IN_SIGNBITD32,
+BUILT_IN_SIGNBITD64,
+BUILT_IN_SIGNBITD128,
+BUILT_IN_SIGNIFICAND,
+BUILT_IN_SIGNIFICANDF,
+BUILT_IN_SIGNIFICANDL,
+BUILT_IN_SIN,
+BUILT_IN_SINCOS,
+BUILT_IN_SINCOSF,
+BUILT_IN_SINCOSL,
+BUILT_IN_SINF,
+BUILT_IN_SINH,
+BUILT_IN_SINHF,
+BUILT_IN_SINHL,
+BUILT_IN_SINL,
+BUILT_IN_SQRT,
+BUILT_IN_SQRTF,
+BUILT_IN_SQRTL,
+BUILT_IN_TAN,
+BUILT_IN_TANF,
+BUILT_IN_TANH,
+BUILT_IN_TANHF,
+BUILT_IN_TANHL,
+BUILT_IN_TANL,
+BUILT_IN_TGAMMA,
+BUILT_IN_TGAMMAF,
+BUILT_IN_TGAMMAL,
+BUILT_IN_TRUNC,
+BUILT_IN_TRUNCF,
+BUILT_IN_TRUNCL,
+BUILT_IN_Y0,
+BUILT_IN_Y0F,
+BUILT_IN_Y0L,
+BUILT_IN_Y1,
+BUILT_IN_Y1F,
+BUILT_IN_Y1L,
+BUILT_IN_YN,
+BUILT_IN_YNF,
+BUILT_IN_YNL,
+
+
+BUILT_IN_CABS,
+BUILT_IN_CABSF,
+BUILT_IN_CABSL,
+BUILT_IN_CACOS,
+BUILT_IN_CACOSF,
+BUILT_IN_CACOSH,
+BUILT_IN_CACOSHF,
+BUILT_IN_CACOSHL,
+BUILT_IN_CACOSL,
+BUILT_IN_CARG,
+BUILT_IN_CARGF,
+BUILT_IN_CARGL,
+BUILT_IN_CASIN,
+BUILT_IN_CASINF,
+BUILT_IN_CASINH,
+BUILT_IN_CASINHF,
+BUILT_IN_CASINHL,
+BUILT_IN_CASINL,
+BUILT_IN_CATAN,
+BUILT_IN_CATANF,
+BUILT_IN_CATANH,
+BUILT_IN_CATANHF,
+BUILT_IN_CATANHL,
+BUILT_IN_CATANL,
+BUILT_IN_CCOS,
+BUILT_IN_CCOSF,
+BUILT_IN_CCOSH,
+BUILT_IN_CCOSHF,
+BUILT_IN_CCOSHL,
+BUILT_IN_CCOSL,
+BUILT_IN_CEXP,
+BUILT_IN_CEXPF,
+BUILT_IN_CEXPL,
+BUILT_IN_CEXPI,
+BUILT_IN_CEXPIF,
+BUILT_IN_CEXPIL,
+BUILT_IN_CIMAG,
+BUILT_IN_CIMAGF,
+BUILT_IN_CIMAGL,
+BUILT_IN_CLOG,
+BUILT_IN_CLOGF,
+BUILT_IN_CLOGL,
+BUILT_IN_CLOG10,
+BUILT_IN_CLOG10F,
+BUILT_IN_CLOG10L,
+BUILT_IN_CONJ,
+BUILT_IN_CONJF,
+BUILT_IN_CONJL,
+BUILT_IN_CPOW,
+BUILT_IN_CPOWF,
+BUILT_IN_CPOWL,
+BUILT_IN_CPROJ,
+BUILT_IN_CPROJF,
+BUILT_IN_CPROJL,
+BUILT_IN_CREAL,
+BUILT_IN_CREALF,
+BUILT_IN_CREALL,
+BUILT_IN_CSIN,
+BUILT_IN_CSINF,
+BUILT_IN_CSINH,
+BUILT_IN_CSINHF,
+BUILT_IN_CSINHL,
+BUILT_IN_CSINL,
+BUILT_IN_CSQRT,
+BUILT_IN_CSQRTF,
+BUILT_IN_CSQRTL,
+BUILT_IN_CTAN,
+BUILT_IN_CTANF,
+BUILT_IN_CTANH,
+BUILT_IN_CTANHF,
+BUILT_IN_CTANHL,
+BUILT_IN_CTANL,
+
+
+
+
+BUILT_IN_BCMP,
+BUILT_IN_BCOPY,
+BUILT_IN_BZERO,
+BUILT_IN_INDEX,
+BUILT_IN_MEMCHR,
+BUILT_IN_MEMCMP,
+BUILT_IN_MEMCPY,
+BUILT_IN_MEMMOVE,
+BUILT_IN_MEMPCPY,
+BUILT_IN_MEMSET,
+BUILT_IN_RINDEX,
+BUILT_IN_STPCPY,
+BUILT_IN_STPNCPY,
+BUILT_IN_STRCASECMP,
+BUILT_IN_STRCAT,
+BUILT_IN_STRCHR,
+BUILT_IN_STRCMP,
+BUILT_IN_STRCPY,
+BUILT_IN_STRCSPN,
+BUILT_IN_STRDUP,
+BUILT_IN_STRNDUP,
+BUILT_IN_STRLEN,
+BUILT_IN_STRNCASECMP,
+BUILT_IN_STRNCAT,
+BUILT_IN_STRNCMP,
+BUILT_IN_STRNCPY,
+BUILT_IN_STRPBRK,
+BUILT_IN_STRRCHR,
+BUILT_IN_STRSPN,
+BUILT_IN_STRSTR,
+
+
+BUILT_IN_FPRINTF,
+BUILT_IN_FPRINTF_UNLOCKED,
+BUILT_IN_PUTC,
+BUILT_IN_PUTC_UNLOCKED,
+BUILT_IN_FPUTC,
+BUILT_IN_FPUTC_UNLOCKED,
+BUILT_IN_FPUTS,
+BUILT_IN_FPUTS_UNLOCKED,
+BUILT_IN_FSCANF,
+BUILT_IN_FWRITE,
+BUILT_IN_FWRITE_UNLOCKED,
+BUILT_IN_PRINTF,
+BUILT_IN_PRINTF_UNLOCKED,
+BUILT_IN_PUTCHAR,
+BUILT_IN_PUTCHAR_UNLOCKED,
+BUILT_IN_PUTS,
+BUILT_IN_PUTS_UNLOCKED,
+BUILT_IN_SCANF,
+BUILT_IN_SNPRINTF,
+BUILT_IN_SPRINTF,
+BUILT_IN_SSCANF,
+BUILT_IN_VFPRINTF,
+BUILT_IN_VFSCANF,
+BUILT_IN_VPRINTF,
+BUILT_IN_VSCANF,
+BUILT_IN_VSNPRINTF,
+BUILT_IN_VSPRINTF,
+BUILT_IN_VSSCANF,
+
+
+BUILT_IN_ISALNUM,
+BUILT_IN_ISALPHA,
+BUILT_IN_ISASCII,
+BUILT_IN_ISBLANK,
+BUILT_IN_ISCNTRL,
+BUILT_IN_ISDIGIT,
+BUILT_IN_ISGRAPH,
+BUILT_IN_ISLOWER,
+BUILT_IN_ISPRINT,
+BUILT_IN_ISPUNCT,
+BUILT_IN_ISSPACE,
+BUILT_IN_ISUPPER,
+BUILT_IN_ISXDIGIT,
+BUILT_IN_TOASCII,
+BUILT_IN_TOLOWER,
+BUILT_IN_TOUPPER,
+
+
+BUILT_IN_ISWALNUM,
+BUILT_IN_ISWALPHA,
+BUILT_IN_ISWBLANK,
+BUILT_IN_ISWCNTRL,
+BUILT_IN_ISWDIGIT,
+BUILT_IN_ISWGRAPH,
+BUILT_IN_ISWLOWER,
+BUILT_IN_ISWPRINT,
+BUILT_IN_ISWPUNCT,
+BUILT_IN_ISWSPACE,
+BUILT_IN_ISWUPPER,
+BUILT_IN_ISWXDIGIT,
+BUILT_IN_TOWLOWER,
+BUILT_IN_TOWUPPER,
+
+
+BUILT_IN_ABORT,
+BUILT_IN_ABS,
+BUILT_IN_AGGREGATE_INCOMING_ADDRESS,
+BUILT_IN_ALLOCA,
+BUILT_IN_APPLY,
+BUILT_IN_APPLY_ARGS,
+BUILT_IN_ARGS_INFO,
+BUILT_IN_BSWAP32,
+BUILT_IN_BSWAP64,
+BUILT_IN_CLEAR_CACHE,
+BUILT_IN_CALLOC,
+BUILT_IN_CLASSIFY_TYPE,
+BUILT_IN_CLZ,
+BUILT_IN_CLZIMAX,
+BUILT_IN_CLZL,
+BUILT_IN_CLZLL,
+BUILT_IN_CONSTANT_P,
+BUILT_IN_CTZ,
+BUILT_IN_CTZIMAX,
+BUILT_IN_CTZL,
+BUILT_IN_CTZLL,
+BUILT_IN_DCGETTEXT,
+BUILT_IN_DGETTEXT,
+BUILT_IN_DWARF_CFA,
+BUILT_IN_DWARF_SP_COLUMN,
+BUILT_IN_EH_RETURN,
+BUILT_IN_EH_RETURN_DATA_REGNO,
+BUILT_IN_EXECL,
+BUILT_IN_EXECLP,
+BUILT_IN_EXECLE,
+BUILT_IN_EXECV,
+BUILT_IN_EXECVP,
+BUILT_IN_EXECVE,
+BUILT_IN_EXIT,
+BUILT_IN_EXPECT,
+BUILT_IN_EXTEND_POINTER,
+BUILT_IN_EXTRACT_RETURN_ADDR,
+BUILT_IN_FFS,
+BUILT_IN_FFSIMAX,
+BUILT_IN_FFSL,
+BUILT_IN_FFSLL,
+BUILT_IN_FORK,
+BUILT_IN_FRAME_ADDRESS,
+BUILT_IN_FREE,
+BUILT_IN_FROB_RETURN_ADDR,
+BUILT_IN_GETTEXT,
+BUILT_IN_IMAXABS,
+BUILT_IN_INIT_DWARF_REG_SIZES,
+BUILT_IN_FINITE,
+BUILT_IN_FINITEF,
+BUILT_IN_FINITEL,
+BUILT_IN_FINITED32,
+BUILT_IN_FINITED64,
+BUILT_IN_FINITED128,
+BUILT_IN_ISFINITE,
+BUILT_IN_ISINF,
+BUILT_IN_ISINFF,
+BUILT_IN_ISINFL,
+BUILT_IN_ISINFD32,
+BUILT_IN_ISINFD64,
+BUILT_IN_ISINFD128,
+BUILT_IN_ISNAN,
+BUILT_IN_ISNANF,
+BUILT_IN_ISNANL,
+BUILT_IN_ISNAND32,
+BUILT_IN_ISNAND64,
+BUILT_IN_ISNAND128,
+BUILT_IN_ISNORMAL,
+BUILT_IN_ISGREATER,
+BUILT_IN_ISGREATEREQUAL,
+BUILT_IN_ISLESS,
+BUILT_IN_ISLESSEQUAL,
+BUILT_IN_ISLESSGREATER,
+BUILT_IN_ISUNORDERED,
+BUILT_IN_LABS,
+BUILT_IN_LLABS,
+BUILT_IN_LONGJMP,
+BUILT_IN_MALLOC,
+BUILT_IN_NEXT_ARG,
+BUILT_IN_PARITY,
+BUILT_IN_PARITYIMAX,
+BUILT_IN_PARITYL,
+BUILT_IN_PARITYLL,
+BUILT_IN_POPCOUNT,
+BUILT_IN_POPCOUNTIMAX,
+BUILT_IN_POPCOUNTL,
+BUILT_IN_POPCOUNTLL,
+BUILT_IN_PREFETCH,
+BUILT_IN_REALLOC,
+BUILT_IN_RETURN,
+BUILT_IN_RETURN_ADDRESS,
+BUILT_IN_SAVEREGS,
+BUILT_IN_SETJMP,
+BUILT_IN_STDARG_START,
+BUILT_IN_STRFMON,
+BUILT_IN_STRFTIME,
+BUILT_IN_TRAP,
+BUILT_IN_UNWIND_INIT,
+BUILT_IN_UPDATE_SETJMP_BUF,
+BUILT_IN_VA_COPY,
+BUILT_IN_VA_END,
+BUILT_IN_VA_START,
+BUILT_IN_VA_ARG_PACK,
+BUILT_IN_VA_ARG_PACK_LEN,
+BUILT_IN__EXIT,
+BUILT_IN__EXIT2,
+
+
+BUILT_IN_INIT_TRAMPOLINE,
+BUILT_IN_ADJUST_TRAMPOLINE,
+BUILT_IN_NONLOCAL_GOTO,
+
+
+BUILT_IN_SETJMP_SETUP,
+BUILT_IN_SETJMP_DISPATCHER,
+BUILT_IN_SETJMP_RECEIVER,
+
+
+BUILT_IN_STACK_SAVE,
+BUILT_IN_STACK_RESTORE,
+
+
+BUILT_IN_OBJECT_SIZE,
+BUILT_IN_MEMCPY_CHK,
+BUILT_IN_MEMMOVE_CHK,
+BUILT_IN_MEMPCPY_CHK,
+BUILT_IN_MEMSET_CHK,
+BUILT_IN_STPCPY_CHK,
+BUILT_IN_STRCAT_CHK,
+BUILT_IN_STRCPY_CHK,
+BUILT_IN_STRNCAT_CHK,
+BUILT_IN_STRNCPY_CHK,
+BUILT_IN_SNPRINTF_CHK,
+BUILT_IN_SPRINTF_CHK,
+BUILT_IN_VSNPRINTF_CHK,
+BUILT_IN_VSPRINTF_CHK,
+BUILT_IN_FPRINTF_CHK,
+BUILT_IN_PRINTF_CHK,
+BUILT_IN_VFPRINTF_CHK,
+BUILT_IN_VPRINTF_CHK,
+
+
+BUILT_IN_PROFILE_FUNC_ENTER,
+BUILT_IN_PROFILE_FUNC_EXIT,
+
+
+BUILT_IN_EMUTLS_GET_ADDRESS,
+BUILT_IN_EMUTLS_REGISTER_COMMON,
+
+
+BUILT_IN_HARTES_STATS_BEGIN,
+BUILT_IN_HARTES_STATS_PARMIN,
+BUILT_IN_HARTES_STATS_PARMOUT,
+BUILT_IN_HARTES_STATS_EXEC,
+BUILT_IN_HARTES_STATS_END,
+
+BUILT_IN_MOLEN_DUMMY,
+
+
+BUILT_IN_FPGA_MOVET,
+BUILT_IN_FPGA_MOVEF,
+BUILT_IN_FPGA_SET,
+BUILT_IN_FPGA_EXECUTE,
+BUILT_IN_FPGA_BREAK,
+BUILT_IN_FPGA_RELEASE,
+
+BUILT_IN_FPGA_MOVET_ADDR,
+BUILT_IN_FPGA_MOVEF_ADDR,
+
+
+
+BUILT_IN_DSP_ALLOCATE_POINTER,
+BUILT_IN_DSP_PARM_INT,
+
+BUILT_IN_DSP_POINTER_INT,
+BUILT_IN_DSP_POINTER_FLOAT,
+BUILT_IN_DSP_POINTER_DWORD,
+
+BUILT_IN_DSP_PARM_LONG,
+BUILT_IN_DSP_PARM_FLOAT,
+BUILT_IN_DSP_PARM_CFLOAT,
+BUILT_IN_DSP_PARM_VFLOAT,
+BUILT_IN_DSP_PARM_CLONG,
+BUILT_IN_DSP_PARM_VLONG,
+
+BUILT_IN_DSP_PRE_EXEC,
+BUILT_IN_DSP_POST_EXEC,
+BUILT_IN_DSP_POST_EXEC_WAIT,
+
+BUILT_IN_DSP_PARM_WRITE_INT,
+BUILT_IN_DSP_PARM_WRITE_LONG,
+BUILT_IN_DSP_PARM_WRITE_FLOAT,
+BUILT_IN_DSP_PARM_WRITE_CFLOAT,
+BUILT_IN_DSP_PARM_WRITE_VFLOAT,
+BUILT_IN_DSP_PARM_WRITE_CLONG,
+BUILT_IN_DSP_PARM_WRITE_VLONG,
+
+BUILT_IN_DSP_PARM_READ_INT,
+BUILT_IN_DSP_PARM_READ_LONG,
+BUILT_IN_DSP_PARM_READ_FLOAT,
+BUILT_IN_DSP_PARM_READ_CFLOAT,
+BUILT_IN_DSP_PARM_READ_VFLOAT,
+BUILT_IN_DSP_PARM_READ_CLONG,
+BUILT_IN_DSP_PARM_READ_VLONG,
+BUILT_IN_DSP_EXEC,
+BUILT_IN_DSP_EXEC_NOWAIT,
+BUILT_IN_DSP_RETI,
+BUILT_IN_DSP_RETL,
+BUILT_IN_DSP_RETF,
+BUILT_IN_DSP_RETDF,
+BUILT_IN_DSP_RETDL,
+
+# 1 "sync-builtins.def" 1
+# 31 "sync-builtins.def"
+BUILT_IN_FETCH_AND_ADD_N,
+
+BUILT_IN_FETCH_AND_ADD_1,
+
+BUILT_IN_FETCH_AND_ADD_2,
+
+BUILT_IN_FETCH_AND_ADD_4,
+
+BUILT_IN_FETCH_AND_ADD_8,
+
+BUILT_IN_FETCH_AND_ADD_16,
+
+
+BUILT_IN_FETCH_AND_SUB_N,
+
+BUILT_IN_FETCH_AND_SUB_1,
+
+BUILT_IN_FETCH_AND_SUB_2,
+
+BUILT_IN_FETCH_AND_SUB_4,
+
+BUILT_IN_FETCH_AND_SUB_8,
+
+BUILT_IN_FETCH_AND_SUB_16,
+
+
+BUILT_IN_FETCH_AND_OR_N,
+
+BUILT_IN_FETCH_AND_OR_1,
+
+BUILT_IN_FETCH_AND_OR_2,
+
+BUILT_IN_FETCH_AND_OR_4,
+
+BUILT_IN_FETCH_AND_OR_8,
+
+BUILT_IN_FETCH_AND_OR_16,
+
+
+BUILT_IN_FETCH_AND_AND_N,
+
+BUILT_IN_FETCH_AND_AND_1,
+
+BUILT_IN_FETCH_AND_AND_2,
+
+BUILT_IN_FETCH_AND_AND_4,
+
+BUILT_IN_FETCH_AND_AND_8,
+
+BUILT_IN_FETCH_AND_AND_16,
+
+
+BUILT_IN_FETCH_AND_XOR_N,
+
+BUILT_IN_FETCH_AND_XOR_1,
+
+BUILT_IN_FETCH_AND_XOR_2,
+
+BUILT_IN_FETCH_AND_XOR_4,
+
+BUILT_IN_FETCH_AND_XOR_8,
+
+BUILT_IN_FETCH_AND_XOR_16,
+
+
+BUILT_IN_FETCH_AND_NAND_N,
+
+BUILT_IN_FETCH_AND_NAND_1,
+
+BUILT_IN_FETCH_AND_NAND_2,
+
+BUILT_IN_FETCH_AND_NAND_4,
+
+BUILT_IN_FETCH_AND_NAND_8,
+
+BUILT_IN_FETCH_AND_NAND_16,
+
+
+BUILT_IN_ADD_AND_FETCH_N,
+
+BUILT_IN_ADD_AND_FETCH_1,
+
+BUILT_IN_ADD_AND_FETCH_2,
+
+BUILT_IN_ADD_AND_FETCH_4,
+
+BUILT_IN_ADD_AND_FETCH_8,
+
+BUILT_IN_ADD_AND_FETCH_16,
+
+
+BUILT_IN_SUB_AND_FETCH_N,
+
+BUILT_IN_SUB_AND_FETCH_1,
+
+BUILT_IN_SUB_AND_FETCH_2,
+
+BUILT_IN_SUB_AND_FETCH_4,
+
+BUILT_IN_SUB_AND_FETCH_8,
+
+BUILT_IN_SUB_AND_FETCH_16,
+
+
+BUILT_IN_OR_AND_FETCH_N,
+
+BUILT_IN_OR_AND_FETCH_1,
+
+BUILT_IN_OR_AND_FETCH_2,
+
+BUILT_IN_OR_AND_FETCH_4,
+
+BUILT_IN_OR_AND_FETCH_8,
+
+BUILT_IN_OR_AND_FETCH_16,
+
+
+BUILT_IN_AND_AND_FETCH_N,
+
+BUILT_IN_AND_AND_FETCH_1,
+
+BUILT_IN_AND_AND_FETCH_2,
+
+BUILT_IN_AND_AND_FETCH_4,
+
+BUILT_IN_AND_AND_FETCH_8,
+
+BUILT_IN_AND_AND_FETCH_16,
+
+
+BUILT_IN_XOR_AND_FETCH_N,
+
+BUILT_IN_XOR_AND_FETCH_1,
+
+BUILT_IN_XOR_AND_FETCH_2,
+
+BUILT_IN_XOR_AND_FETCH_4,
+
+BUILT_IN_XOR_AND_FETCH_8,
+
+BUILT_IN_XOR_AND_FETCH_16,
+
+
+BUILT_IN_NAND_AND_FETCH_N,
+
+BUILT_IN_NAND_AND_FETCH_1,
+
+BUILT_IN_NAND_AND_FETCH_2,
+
+BUILT_IN_NAND_AND_FETCH_4,
+
+BUILT_IN_NAND_AND_FETCH_8,
+
+BUILT_IN_NAND_AND_FETCH_16,
+
+
+BUILT_IN_BOOL_COMPARE_AND_SWAP_N,
+
+
+BUILT_IN_BOOL_COMPARE_AND_SWAP_1,
+
+
+BUILT_IN_BOOL_COMPARE_AND_SWAP_2,
+
+
+BUILT_IN_BOOL_COMPARE_AND_SWAP_4,
+
+
+BUILT_IN_BOOL_COMPARE_AND_SWAP_8,
+
+
+BUILT_IN_BOOL_COMPARE_AND_SWAP_16,
+
+
+
+BUILT_IN_VAL_COMPARE_AND_SWAP_N,
+
+
+BUILT_IN_VAL_COMPARE_AND_SWAP_1,
+
+
+BUILT_IN_VAL_COMPARE_AND_SWAP_2,
+
+
+BUILT_IN_VAL_COMPARE_AND_SWAP_4,
+
+
+BUILT_IN_VAL_COMPARE_AND_SWAP_8,
+
+
+BUILT_IN_VAL_COMPARE_AND_SWAP_16,
+
+
+
+BUILT_IN_LOCK_TEST_AND_SET_N,
+
+BUILT_IN_LOCK_TEST_AND_SET_1,
+
+BUILT_IN_LOCK_TEST_AND_SET_2,
+
+BUILT_IN_LOCK_TEST_AND_SET_4,
+
+BUILT_IN_LOCK_TEST_AND_SET_8,
+
+BUILT_IN_LOCK_TEST_AND_SET_16,
+
+
+BUILT_IN_LOCK_RELEASE_N,
+
+BUILT_IN_LOCK_RELEASE_1,
+
+BUILT_IN_LOCK_RELEASE_2,
+
+BUILT_IN_LOCK_RELEASE_4,
+
+BUILT_IN_LOCK_RELEASE_8,
+
+BUILT_IN_LOCK_RELEASE_16,
+
+
+BUILT_IN_SYNCHRONIZE,
+# 816 "builtins.def" 2
+
+
+# 1 "omp-builtins.def" 1
+# 27 "omp-builtins.def"
+BUILT_IN_OMP_GET_THREAD_NUM,
+
+BUILT_IN_OMP_GET_NUM_THREADS,
+
+
+BUILT_IN_GOMP_ATOMIC_START,
+
+BUILT_IN_GOMP_ATOMIC_END,
+
+BUILT_IN_GOMP_BARRIER,
+
+BUILT_IN_GOMP_CRITICAL_START,
+
+BUILT_IN_GOMP_CRITICAL_END,
+
+BUILT_IN_GOMP_CRITICAL_NAME_START,
+
+
+BUILT_IN_GOMP_CRITICAL_NAME_END,
+
+
+
+
+
+BUILT_IN_GOMP_LOOP_STATIC_START,
+
+
+
+BUILT_IN_GOMP_LOOP_DYNAMIC_START,
+
+
+
+BUILT_IN_GOMP_LOOP_GUIDED_START,
+
+
+
+BUILT_IN_GOMP_LOOP_RUNTIME_START,
+
+
+
+BUILT_IN_GOMP_LOOP_ORDERED_STATIC_START,
+
+
+
+BUILT_IN_GOMP_LOOP_ORDERED_DYNAMIC_START,
+
+
+
+BUILT_IN_GOMP_LOOP_ORDERED_GUIDED_START,
+
+
+
+BUILT_IN_GOMP_LOOP_ORDERED_RUNTIME_START,
+
+
+
+BUILT_IN_GOMP_LOOP_STATIC_NEXT,
+
+BUILT_IN_GOMP_LOOP_DYNAMIC_NEXT,
+
+BUILT_IN_GOMP_LOOP_GUIDED_NEXT,
+
+BUILT_IN_GOMP_LOOP_RUNTIME_NEXT,
+
+BUILT_IN_GOMP_LOOP_ORDERED_STATIC_NEXT,
+
+
+BUILT_IN_GOMP_LOOP_ORDERED_DYNAMIC_NEXT,
+
+
+BUILT_IN_GOMP_LOOP_ORDERED_GUIDED_NEXT,
+
+
+BUILT_IN_GOMP_LOOP_ORDERED_RUNTIME_NEXT,
+
+
+
+
+
+BUILT_IN_GOMP_PARALLEL_LOOP_STATIC_START,
+
+
+
+BUILT_IN_GOMP_PARALLEL_LOOP_DYNAMIC_START,
+
+
+
+BUILT_IN_GOMP_PARALLEL_LOOP_GUIDED_START,
+
+
+
+BUILT_IN_GOMP_PARALLEL_LOOP_RUNTIME_START,
+
+
+
+BUILT_IN_GOMP_LOOP_END,
+
+BUILT_IN_GOMP_LOOP_END_NOWAIT,
+
+BUILT_IN_GOMP_ORDERED_START,
+
+BUILT_IN_GOMP_ORDERED_END,
+
+BUILT_IN_GOMP_PARALLEL_START,
+
+BUILT_IN_GOMP_PARALLEL_END,
+
+BUILT_IN_GOMP_SECTIONS_START,
+
+BUILT_IN_GOMP_SECTIONS_NEXT,
+
+BUILT_IN_GOMP_PARALLEL_SECTIONS_START,
+
+
+BUILT_IN_GOMP_SECTIONS_END,
+
+BUILT_IN_GOMP_SECTIONS_END_NOWAIT,
+
+
+BUILT_IN_GOMP_SINGLE_START,
+
+BUILT_IN_GOMP_SINGLE_COPY_START,
+
+BUILT_IN_GOMP_SINGLE_COPY_END,
+# 818 "builtins.def" 2
+# 238 "tree.h" 2
+
+
+
+  BUILT_IN_COMPLEX_MUL_MIN,
+  BUILT_IN_COMPLEX_MUL_MAX
+    = BUILT_IN_COMPLEX_MUL_MIN
+      + MAX_MODE_COMPLEX_FLOAT
+      - MIN_MODE_COMPLEX_FLOAT,
+
+  BUILT_IN_COMPLEX_DIV_MIN,
+  BUILT_IN_COMPLEX_DIV_MAX
+    = BUILT_IN_COMPLEX_DIV_MIN
+      + MAX_MODE_COMPLEX_FLOAT
+      - MIN_MODE_COMPLEX_FLOAT,
+
+
+  END_BUILTINS
+};
+
+
+
+extern const char * built_in_names[(int) END_BUILTINS];
+# 284 "tree.h"
+extern tree built_in_decls[(int) END_BUILTINS];
+extern tree implicit_built_in_decls[(int) END_BUILTINS];
+
+
+
+
+extern unsigned const char omp_clause_num_ops[];
+extern const char * const omp_clause_code_name[];
+
+
+
+enum omp_clause_code
+{
+
+
+  OMP_CLAUSE_ERROR = 0,
+
+
+  OMP_CLAUSE_PRIVATE,
+
+
+  OMP_CLAUSE_SHARED,
+
+
+  OMP_CLAUSE_FIRSTPRIVATE,
+
+
+  OMP_CLAUSE_LASTPRIVATE,
+# 320 "tree.h"
+  OMP_CLAUSE_REDUCTION,
+
+
+  OMP_CLAUSE_COPYIN,
+
+
+  OMP_CLAUSE_COPYPRIVATE,
+
+
+  OMP_CLAUSE_IF,
+
+
+  OMP_CLAUSE_NUM_THREADS,
+
+
+  OMP_CLAUSE_SCHEDULE,
+
+
+  OMP_CLAUSE_NOWAIT,
+
+
+  OMP_CLAUSE_ORDERED,
+
+
+  OMP_CLAUSE_DEFAULT
+};
+# 368 "tree.h"
+union tree_ann_d;
+
+struct tree_base
+{
+  ENUM_BITFIELD(tree_code) code : 16;
+
+  unsigned side_effects_flag : 1;
+  unsigned constant_flag : 1;
+  unsigned addressable_flag : 1;
+  unsigned volatile_flag : 1;
+  unsigned readonly_flag : 1;
+  unsigned unsigned_flag : 1;
+  unsigned asm_written_flag: 1;
+  unsigned nowarning_flag : 1;
+
+  unsigned used_flag : 1;
+  unsigned nothrow_flag : 1;
+  unsigned static_flag : 1;
+  unsigned public_flag : 1;
+  unsigned private_flag : 1;
+  unsigned protected_flag : 1;
+  unsigned deprecated_flag : 1;
+  unsigned invariant_flag : 1;
+  unsigned saturating_flag : 1;
+
+  unsigned lang_flag_0 : 1;
+  unsigned lang_flag_1 : 1;
+  unsigned lang_flag_2 : 1;
+  unsigned lang_flag_3 : 1;
+  unsigned lang_flag_4 : 1;
+  unsigned lang_flag_5 : 1;
+  unsigned lang_flag_6 : 1;
+  unsigned visited : 1;
+
+  unsigned spare : 23;
+
+
+
+  union tree_ann_d *ann;
+};
+
+struct tree_common
+{
+  struct tree_base base;
+  tree chain;
+  tree type;
+};
+
+
+struct gimple_stmt
+{
+  struct tree_base base;
+  source_locus locus;
+  tree block;
+
+  tree operands[1];
+};
+# 599 "tree.h"
+enum tree_node_structure_enum {
+# 1 "treestruct.def" 1
+# 30 "treestruct.def"
+TS_BASE,
+TS_COMMON,
+TS_INT_CST,
+TS_REAL_CST,
+TS_FIXED_CST,
+TS_VECTOR,
+TS_STRING,
+TS_COMPLEX,
+TS_IDENTIFIER,
+TS_DECL_MINIMAL,
+TS_DECL_COMMON,
+TS_DECL_WRTL,
+TS_DECL_NON_COMMON,
+TS_DECL_WITH_VIS,
+TS_FIELD_DECL,
+TS_VAR_DECL,
+TS_PARM_DECL,
+TS_LABEL_DECL,
+TS_RESULT_DECL,
+TS_CONST_DECL,
+TS_TYPE_DECL,
+TS_FUNCTION_DECL,
+TS_TYPE,
+TS_LIST,
+TS_VEC,
+TS_EXP,
+TS_SSA_NAME,
+TS_PHI_NODE,
+TS_BLOCK,
+TS_BINFO,
+TS_STATEMENT_LIST,
+TS_GIMPLE_STATEMENT,
+TS_VALUE_HANDLE,
+TS_CONSTRUCTOR,
+TS_MEMORY_TAG,
+TS_STRUCT_FIELD_TAG,
+TS_OMP_CLAUSE,
+TS_MEMORY_PARTITION_TAG,
+# 601 "tree.h" 2
+  LAST_TS_ENUM
+};
+# 1414 "tree.h"
+struct tree_int_cst
+{
+  struct tree_common common;
+  double_int int_cst;
+};
+
+
+
+
+struct real_value;
+
+
+
+
+struct tree_real_cst
+{
+  struct tree_common common;
+  struct real_value * real_cst_ptr;
+};
+
+
+struct fixed_value;
+
+
+
+
+struct tree_fixed_cst
+{
+  struct tree_common common;
+  struct fixed_value * fixed_cst_ptr;
+};
+
+
+
+
+
+
+struct tree_string
+{
+  struct tree_common common;
+  int length;
+  char str[1];
+};
+
+
+
+
+
+struct tree_complex
+{
+  struct tree_common common;
+  tree real;
+  tree imag;
+};
+
+
+
+
+struct tree_vector
+{
+  struct tree_common common;
+  tree elements;
+};
+# 1496 "tree.h"
+struct tree_identifier
+{
+  struct tree_common common;
+  struct ht_identifier id;
+};
+
+
+
+
+
+struct tree_list
+{
+  struct tree_common common;
+  tree purpose;
+  tree value;
+};
+# 1520 "tree.h"
+struct tree_vec
+{
+  struct tree_common common;
+  int length;
+  tree a[1];
+};
+# 1563 "tree.h"
+typedef struct constructor_elt_d
+{
+  tree index;
+  tree value;
+} constructor_elt;
+
+typedef struct VEC_constructor_elt_base { unsigned num; unsigned alloc; constructor_elt vec[1]; } VEC_constructor_elt_base; typedef struct VEC_constructor_elt_none { VEC_constructor_elt_base base; } VEC_constructor_elt_none; static __inline__ unsigned VEC_constructor_elt_base_length (const VEC_constructor_elt_base *vec_) { return vec_ ? vec_->num : 0; } static __inline__ constructor_elt *VEC_constructor_elt_base_last (VEC_constructor_elt_base *vec_ ) { (void)(vec_ && vec_->num); return &vec_->vec[vec_->num - 1]; } static __inline__ constructor_elt *VEC_constructor_elt_base_index (VEC_constructor_elt_base *vec_, unsigned ix_ ) { (void)(vec_ && ix_ < vec_->num); return &vec_->vec[ix_]; } static __inline__ int VEC_constructor_elt_base_iterate (VEC_constructor_elt_base *vec_, unsigned ix_, constructor_elt **ptr) { if (vec_ && ix_ < vec_->num) { *ptr = &vec_->vec[ix_]; return 1; } else { *ptr = 0; return 0; } } static __inline__ size_t VEC_constructor_elt_base_embedded_size (int alloc_) { return offsetof (VEC_constructor_elt_base,vec) + alloc_ * sizeof(constructor_elt); } static __inline__ void VEC_constructor_elt_base_embedded_init (VEC_constructor_elt_base *vec_, int alloc_) { vec_->num = 0; vec_->alloc = alloc_; } static __inline__ int VEC_constructor_elt_base_space (VEC_constructor_elt_base *vec_, int alloc_ ) { (void)(alloc_ >= 0); return vec_ ? vec_->alloc - vec_->num >= (unsigned)alloc_ : !alloc_; } static __inline__ constructor_elt *VEC_constructor_elt_base_quick_push (VEC_constructor_elt_base *vec_, const constructor_elt *obj_ ) { constructor_elt *slot_; (void)(vec_->num < vec_->alloc); slot_ = &vec_->vec[vec_->num++]; if (obj_) *slot_ = *obj_; return slot_; } static __inline__ void VEC_constructor_elt_base_pop (VEC_constructor_elt_base *vec_ ) { (void)(vec_->num); --vec_->num; } static __inline__ void VEC_constructor_elt_base_truncate (VEC_constructor_elt_base *vec_, unsigned size_ ) { (void)(vec_ ? vec_->num >= size_ : !size_); if (vec_) vec_->num = size_; } static __inline__ constructor_elt *VEC_constructor_elt_base_replace (VEC_constructor_elt_base *vec_, unsigned ix_, const constructor_elt *obj_ ) { constructor_elt *slot_; (void)(ix_ < vec_->num); slot_ = &vec_->vec[ix_]; if (obj_) *slot_ = *obj_; return slot_; } static __inline__ constructor_elt *VEC_constructor_elt_base_quick_insert (VEC_constructor_elt_base *vec_, unsigned ix_, const constructor_elt *obj_ ) { constructor_elt *slot_; (void)(vec_->num < vec_->alloc); (void)(ix_ <= vec_->num); slot_ = &vec_->vec[ix_]; memmove (slot_ + 1, slot_, (vec_->num++ - ix_) * sizeof (constructor_elt)); if (obj_) *slot_ = *obj_; return slot_; } static __inline__ void VEC_constructor_elt_base_ordered_remove (VEC_constructor_elt_base *vec_, unsigned ix_ ) { constructor_elt *slot_; (void)(ix_ < vec_->num); slot_ = &vec_->vec[ix_]; memmove (slot_, slot_ + 1, (--vec_->num - ix_) * sizeof (constructor_elt)); } static __inline__ void VEC_constructor_elt_base_unordered_remove (VEC_constructor_elt_base *vec_, unsigned ix_ ) { (void)(ix_ < vec_->num); vec_->vec[ix_] = vec_->vec[--vec_->num]; } static __inline__ void VEC_constructor_elt_base_block_remove (VEC_constructor_elt_base *vec_, unsigned ix_, unsigned len_ ) { constructor_elt *slot_; (void)(ix_ + len_ <= vec_->num); slot_ = &vec_->vec[ix_]; vec_->num -= len_; memmove (slot_, slot_ + len_, (vec_->num - ix_) * sizeof (constructor_elt)); } static __inline__ constructor_elt *VEC_constructor_elt_base_address (VEC_constructor_elt_base *vec_) { return vec_ ? vec_->vec : 0; } static __inline__ unsigned VEC_constructor_elt_base_lower_bound (VEC_constructor_elt_base *vec_, const constructor_elt *obj_, bool (*lessthan_)(const constructor_elt *, const constructor_elt *) ) { unsigned int len_ = VEC_constructor_elt_base_length (vec_); unsigned int half_, middle_; unsigned int first_ = 0; while (len_ > 0) { constructor_elt *middle_elem_; half_ = len_ >> 1; middle_ = first_; middle_ += half_; middle_elem_ = VEC_constructor_elt_base_index (vec_, middle_ ); if (lessthan_ (middle_elem_, obj_)) { first_ = middle_; ++first_; len_ = len_ - half_ - 1; } else len_ = half_; } return first_; } struct vec_swallow_trailing_semi;
+typedef struct VEC_constructor_elt_gc { VEC_constructor_elt_base base; } VEC_constructor_elt_gc; static __inline__ VEC_constructor_elt_gc *VEC_constructor_elt_gc_alloc (int alloc_ ) { return (VEC_constructor_elt_gc *) vec_gc_o_reserve_exact (NULL, alloc_, offsetof (VEC_constructor_elt_gc,base.vec), sizeof (constructor_elt) ); } static __inline__ VEC_constructor_elt_gc *VEC_constructor_elt_gc_copy (VEC_constructor_elt_base *vec_ ) { size_t len_ = vec_ ? vec_->num : 0; VEC_constructor_elt_gc *new_vec_ = NULL; if (len_) { new_vec_ = (VEC_constructor_elt_gc *)(vec_gc_o_reserve_exact (NULL, len_, offsetof (VEC_constructor_elt_gc,base.vec), sizeof (constructor_elt) )); new_vec_->base.num = len_; memcpy (new_vec_->base.vec, vec_->vec, sizeof (constructor_elt) * len_); } return new_vec_; } static __inline__ void VEC_constructor_elt_gc_free (VEC_constructor_elt_gc **vec_) { if (*vec_) ggc_free (*vec_); *vec_ = NULL; } static __inline__ int VEC_constructor_elt_gc_reserve (VEC_constructor_elt_gc **vec_, int alloc_ ) { int extend = !VEC_constructor_elt_base_space (((*vec_) ? &(*vec_)->base : 0), alloc_ ); if (extend) *vec_ = (VEC_constructor_elt_gc *) vec_gc_o_reserve (*vec_, alloc_, offsetof (VEC_constructor_elt_gc,base.vec), sizeof (constructor_elt) ); return extend; } static __inline__ int VEC_constructor_elt_gc_reserve_exact (VEC_constructor_elt_gc **vec_, int alloc_ ) { int extend = !VEC_constructor_elt_base_space (((*vec_) ? &(*vec_)->base : 0), alloc_ ); if (extend) *vec_ = (VEC_constructor_elt_gc *) vec_gc_o_reserve_exact (*vec_, alloc_, offsetof (VEC_constructor_elt_gc,base.vec), sizeof (constructor_elt) ); return extend; } static __inline__ void VEC_constructor_elt_gc_safe_grow (VEC_constructor_elt_gc **vec_, int size_ ) { (void)(size_ >= 0 && VEC_constructor_elt_base_length ((*vec_) ? &(*vec_)->base : 0) <= (unsigned)size_); VEC_constructor_elt_gc_reserve_exact (vec_, size_ - (int)(*vec_ ? ((*vec_) ? &(*vec_)->base : 0)->num : 0) ); ((*vec_) ? &(*vec_)->base : 0)->num = size_; } static __inline__ void VEC_constructor_elt_gc_safe_grow_cleared (VEC_constructor_elt_gc **vec_, int size_ ) { int oldsize = VEC_constructor_elt_base_length ((*vec_) ? &(*vec_)->base : 0); VEC_constructor_elt_gc_safe_grow (vec_, size_ ); memset (&(VEC_constructor_elt_base_address ((*vec_) ? &(*vec_)->base : 0))[oldsize], 0, sizeof (constructor_elt) * (size_ - oldsize)); } static __inline__ constructor_elt *VEC_constructor_elt_gc_safe_push (VEC_constructor_elt_gc **vec_, const constructor_elt *obj_ ) { VEC_constructor_elt_gc_reserve (vec_, 1 ); return VEC_constructor_elt_base_quick_push (((*vec_) ? &(*vec_)->base : 0), obj_ ); } static __inline__ constructor_elt *VEC_constructor_elt_gc_safe_insert (VEC_constructor_elt_gc **vec_, unsigned ix_, const constructor_elt *obj_ ) { VEC_constructor_elt_gc_reserve (vec_, 1 ); return VEC_constructor_elt_base_quick_insert (((*vec_) ? &(*vec_)->base : 0), ix_, obj_ ); } struct vec_swallow_trailing_semi;
+
+struct tree_constructor
+{
+  struct tree_common common;
+  VEC_constructor_elt_gc *elts;
+};
+# 1819 "tree.h"
+enum omp_clause_schedule_kind
+{
+  OMP_CLAUSE_SCHEDULE_STATIC,
+  OMP_CLAUSE_SCHEDULE_DYNAMIC,
+  OMP_CLAUSE_SCHEDULE_GUIDED,
+  OMP_CLAUSE_SCHEDULE_RUNTIME
+};
+
+
+
+
+enum omp_clause_default_kind
+{
+  OMP_CLAUSE_DEFAULT_UNSPECIFIED,
+  OMP_CLAUSE_DEFAULT_SHARED,
+  OMP_CLAUSE_DEFAULT_NONE,
+  OMP_CLAUSE_DEFAULT_PRIVATE
+};
+
+
+
+
+struct tree_exp
+{
+  struct tree_common common;
+  source_locus locus;
+  tree block;
+  tree
+
+    operands[1];
+};
+# 1895 "tree.h"
+struct ptr_info_def;
+
+
+
+
+
+
+typedef struct ssa_use_operand_d
+{
+  struct ssa_use_operand_d* prev;
+  struct ssa_use_operand_d* next;
+  tree stmt;
+  tree * use;
+} ssa_use_operand_t;
+
+
+
+
+struct tree_ssa_name
+{
+  struct tree_common common;
+
+
+  tree var;
+
+
+  unsigned int version;
+
+
+  struct ptr_info_def *ptr_info;
+
+
+
+
+
+
+  tree value_handle;
+
+
+  struct ssa_use_operand_d imm_uses;
+};
+# 1960 "tree.h"
+struct phi_arg_d
+{
+
+
+  struct ssa_use_operand_d imm_use;
+  tree def;
+};
+
+struct tree_phi_node
+{
+  struct tree_base common;
+  tree chain;
+  tree result;
+  int num_args;
+  int capacity;
+
+
+  struct basic_block_def *bb;
+
+
+
+  struct phi_arg_d a[1];
+};
+# 1997 "tree.h"
+struct tree_omp_clause
+{
+  struct tree_common common;
+  enum omp_clause_code code;
+  union omp_clause_subcode {
+    enum omp_clause_default_kind default_kind;
+    enum omp_clause_schedule_kind schedule_kind;
+    enum tree_code reduction_code;
+  } subcode;
+  tree ops[1];
+};
+
+
+struct varray_head_tag;
+# 2063 "tree.h"
+struct tree_block
+{
+  struct tree_common common;
+
+  unsigned handler_block_flag : 1;
+  unsigned abstract_flag : 1;
+  unsigned block_num : 30;
+
+  location_t locus;
+
+  tree vars;
+  tree subblocks;
+  tree supercontext;
+  tree abstract_origin;
+  tree fragment_origin;
+  tree fragment_chain;
+};
+# 2298 "tree.h"
+struct die_struct;
+
+struct tree_type
+{
+  struct tree_common common;
+  tree values;
+  tree size;
+  tree size_unit;
+  tree attributes;
+  unsigned int uid;
+
+  unsigned int precision : 9;
+  ENUM_BITFIELD(machine_mode) mode : 7;
+
+  unsigned string_flag : 1;
+  unsigned no_force_blk_flag : 1;
+  unsigned needs_constructing_flag : 1;
+  unsigned transparent_union_flag : 1;
+  unsigned packed_flag : 1;
+  unsigned restrict_flag : 1;
+  unsigned contains_placeholder_bits : 2;
+
+  unsigned lang_flag_0 : 1;
+  unsigned lang_flag_1 : 1;
+  unsigned lang_flag_2 : 1;
+  unsigned lang_flag_3 : 1;
+  unsigned lang_flag_4 : 1;
+  unsigned lang_flag_5 : 1;
+  unsigned lang_flag_6 : 1;
+  unsigned user_align : 1;
+
+  unsigned int align;
+  tree pointer_to;
+  tree reference_to;
+  union tree_type_symtab {
+    int address;
+    const char * pointer;
+    struct die_struct * die;
+  } symtab;
+
+  tree name;
+  tree minval;
+  tree maxval;
+  tree next_variant;
+  tree main_variant;
+  tree binfo;
+  tree context;
+  tree canonical;
+  alias_set_type alias_set;
+
+  struct lang_type *lang_specific;
+};
+# 2454 "tree.h"
+struct tree_binfo
+{
+  struct tree_common common;
+
+  tree offset;
+  tree vtable;
+  tree virtuals;
+  tree vptr_field;
+  VEC_tree_gc *base_accesses;
+  tree inheritance;
+
+  tree vtt_subvtt;
+  tree vtt_vptr;
+
+  VEC_tree_none base_binfos;
+};
+# 2492 "tree.h"
+enum symbol_visibility
+{
+  VISIBILITY_DEFAULT,
+  VISIBILITY_PROTECTED,
+  VISIBILITY_HIDDEN,
+  VISIBILITY_INTERNAL
+};
+
+
+struct function;
+# 2534 "tree.h"
+struct tree_decl_minimal
+{
+  struct tree_common common;
+  location_t locus;
+  unsigned int uid;
+  tree name;
+  tree context;
+};
+# 2560 "tree.h"
+struct tree_memory_tag
+{
+  struct tree_decl_minimal common;
+
+  bitmap aliases;
+
+
+  unsigned int is_global : 1;
+
+
+
+  unsigned int base_for_components : 1;
+
+
+  unsigned int unpartitionable : 1;
+};
+
+
+
+
+struct tree_struct_field_tag
+{
+  struct tree_memory_tag common;
+
+
+  tree parent_var;
+
+
+  unsigned HOST_WIDE_INT offset;
+
+
+  unsigned HOST_WIDE_INT size;
+
+
+  alias_set_type alias_set;
+};
+# 2610 "tree.h"
+struct tree_memory_partition_tag
+{
+  struct tree_memory_tag common;
+
+
+  bitmap symbols;
+};
+# 2766 "tree.h"
+struct tree_decl_common
+{
+  struct tree_decl_minimal common;
+  tree size;
+
+  ENUM_BITFIELD(machine_mode) mode : 8;
+
+  unsigned nonlocal_flag : 1;
+  unsigned virtual_flag : 1;
+  unsigned ignored_flag : 1;
+  unsigned abstract_flag : 1;
+  unsigned artificial_flag : 1;
+  unsigned user_align : 1;
+  unsigned preserve_flag: 1;
+  unsigned debug_expr_is_from : 1;
+
+  unsigned lang_flag_0 : 1;
+  unsigned lang_flag_1 : 1;
+  unsigned lang_flag_2 : 1;
+  unsigned lang_flag_3 : 1;
+  unsigned lang_flag_4 : 1;
+  unsigned lang_flag_5 : 1;
+  unsigned lang_flag_6 : 1;
+  unsigned lang_flag_7 : 1;
+
+
+
+  unsigned decl_flag_0 : 1;
+
+  unsigned decl_flag_1 : 1;
+
+
+
+  unsigned decl_flag_2 : 1;
+
+
+  unsigned decl_flag_3 : 1;
+
+
+  unsigned gimple_reg_flag : 1;
+
+  unsigned no_tbaa_flag : 1;
+
+  unsigned decl_common_unused : 2;
+
+  unsigned int align : 24;
+
+  unsigned int off_align : 8;
+
+  tree size_unit;
+  tree initial;
+  tree attributes;
+  tree abstract_origin;
+
+  alias_set_type pointer_alias_set;
+
+  struct lang_decl *lang_specific;
+};
+
+extern tree decl_value_expr_lookup (tree);
+extern void decl_value_expr_insert (tree, tree);
+# 2867 "tree.h"
+struct tree_decl_with_rtl
+{
+  struct tree_decl_common common;
+  rtx rtl;
+};
+# 2923 "tree.h"
+struct tree_field_decl
+{
+  struct tree_decl_common common;
+
+  tree offset;
+  tree bit_field_type;
+  tree qualifier;
+  tree bit_offset;
+  tree fcontext;
+
+};
+# 2945 "tree.h"
+struct tree_label_decl
+{
+  struct tree_decl_with_rtl common;
+};
+
+struct tree_result_decl
+{
+  struct tree_decl_with_rtl common;
+};
+
+struct tree_const_decl
+{
+  struct tree_decl_with_rtl common;
+};
+# 2968 "tree.h"
+struct tree_parm_decl
+{
+  struct tree_decl_with_rtl common;
+  rtx incoming_rtl;
+};
+# 3012 "tree.h"
+extern tree decl_restrict_base_lookup (tree);
+extern void decl_restrict_base_insert (tree, tree);
+# 3096 "tree.h"
+struct tree_decl_with_vis
+{
+ struct tree_decl_with_rtl common;
+ tree assembler_name;
+ tree section_name;
+
+
+ unsigned defer_output:1;
+ unsigned hard_register:1;
+ unsigned thread_local:1;
+ unsigned common_flag:1;
+ unsigned in_text_section : 1;
+ unsigned gimple_formal_temp : 1;
+ unsigned dllimport_flag : 1;
+ unsigned based_on_restrict_p : 1;
+
+ unsigned shadowed_for_var_p : 1;
+
+
+ unsigned in_system_header_flag : 1;
+ unsigned weak_flag:1;
+ unsigned seen_in_bind_expr : 1;
+ unsigned comdat_flag : 1;
+ ENUM_BITFIELD(symbol_visibility) visibility : 2;
+ unsigned visibility_specified : 1;
+
+ unsigned one_only : 1;
+ unsigned init_priority_p:1;
+
+
+ ENUM_BITFIELD(tls_model) tls_model : 3;
+
+};
+# 3143 "tree.h"
+extern tree decl_debug_expr_lookup (tree);
+extern void decl_debug_expr_insert (tree, tree);
+# 3155 "tree.h"
+typedef unsigned short priority_type;
+
+extern priority_type decl_init_priority_lookup (tree);
+extern priority_type decl_fini_priority_lookup (tree);
+extern void decl_init_priority_insert (tree, priority_type);
+extern void decl_fini_priority_insert (tree, priority_type);
+# 3203 "tree.h"
+struct tree_var_decl
+{
+  struct tree_decl_with_vis common;
+};
+# 3223 "tree.h"
+struct tree_decl_non_common
+
+{
+  struct tree_decl_with_vis common;
+
+  tree saved_tree;
+
+  tree arguments;
+
+  tree result;
+
+  tree vindex;
+};
+# 3341 "tree.h"
+struct tree_function_decl
+{
+  struct tree_decl_non_common common;
+
+  struct function *f;
+
+
+
+
+
+  ENUM_BITFIELD(built_in_function) function_code : 11;
+  ENUM_BITFIELD(built_in_class) built_in_class : 2;
+
+  unsigned static_ctor_flag : 1;
+  unsigned static_dtor_flag : 1;
+  unsigned uninlinable : 1;
+
+  unsigned possibly_inlined : 1;
+  unsigned novops_flag : 1;
+  unsigned returns_twice_flag : 1;
+  unsigned malloc_flag : 1;
+  unsigned operator_new_flag : 1;
+  unsigned pure_flag : 1;
+  unsigned declared_inline_flag : 1;
+  unsigned regdecl_flag : 1;
+
+  unsigned inline_flag : 1;
+  unsigned no_instrument_function_entry_exit : 1;
+  unsigned no_limit_stack : 1;
+  unsigned disregard_inline_limits : 1;
+
+
+};
+# 3384 "tree.h"
+struct tree_type_decl
+{
+  struct tree_decl_non_common common;
+
+};
+# 3401 "tree.h"
+struct tree_statement_list_node
+ 
+{
+  struct tree_statement_list_node *prev;
+  struct tree_statement_list_node *next;
+  tree stmt;
+};
+
+struct tree_statement_list
+ 
+{
+  struct tree_common common;
+  struct tree_statement_list_node *head;
+  struct tree_statement_list_node *tail;
+};
+# 3425 "tree.h"
+struct tree_value_handle
+{
+  struct tree_common common;
+
+
+  struct bitmap_set * expr_set;
+
+
+
+
+  unsigned int id;
+};
+
+
+
+
+
+union tree_node
+
+{
+  struct tree_base base;
+  struct tree_common common;
+  struct tree_int_cst int_cst;
+  struct tree_real_cst real_cst;
+  struct tree_fixed_cst fixed_cst;
+  struct tree_vector vector;
+  struct tree_string string;
+  struct tree_complex complex;
+  struct tree_identifier identifier;
+  struct tree_decl_minimal decl_minimal;
+  struct tree_decl_common decl_common;
+  struct tree_decl_with_rtl decl_with_rtl;
+  struct tree_decl_non_common decl_non_common;
+  struct tree_parm_decl parm_decl;
+  struct tree_decl_with_vis decl_with_vis;
+  struct tree_var_decl var_decl;
+  struct tree_field_decl field_decl;
+  struct tree_label_decl label_decl;
+  struct tree_result_decl result_decl;
+  struct tree_const_decl const_decl;
+  struct tree_type_decl type_decl;
+  struct tree_function_decl function_decl;
+  struct tree_type type;
+  struct tree_list list;
+  struct tree_vec vec;
+  struct tree_exp exp;
+  struct tree_ssa_name ssa_name;
+  struct tree_phi_node phi;
+  struct tree_block block;
+  struct tree_binfo binfo;
+  struct tree_statement_list stmt_list;
+  struct gimple_stmt gstmt;
+  struct tree_value_handle value_handle;
+  struct tree_constructor constructor;
+  struct tree_memory_tag mtag;
+  struct tree_struct_field_tag sft;
+  struct tree_omp_clause omp_clause;
+  struct tree_memory_partition_tag mpt;
+};
+
+
+
+enum tree_index
+{
+  TI_ERROR_MARK,
+  TI_INTQI_TYPE,
+  TI_INTHI_TYPE,
+  TI_INTSI_TYPE,
+  TI_INTDI_TYPE,
+  TI_INTTI_TYPE,
+
+  TI_UINTQI_TYPE,
+  TI_UINTHI_TYPE,
+  TI_UINTSI_TYPE,
+  TI_UINTDI_TYPE,
+  TI_UINTTI_TYPE,
+
+  TI_UINT32_TYPE,
+  TI_UINT64_TYPE,
+
+  TI_INTEGER_ZERO,
+  TI_INTEGER_ONE,
+  TI_INTEGER_MINUS_ONE,
+  TI_NULL_POINTER,
+
+  TI_SIZE_ZERO,
+  TI_SIZE_ONE,
+
+  TI_BITSIZE_ZERO,
+  TI_BITSIZE_ONE,
+  TI_BITSIZE_UNIT,
+
+  TI_PUBLIC,
+  TI_PROTECTED,
+  TI_PRIVATE,
+
+  TI_BOOLEAN_FALSE,
+  TI_BOOLEAN_TRUE,
+
+  TI_COMPLEX_INTEGER_TYPE,
+  TI_COMPLEX_FLOAT_TYPE,
+  TI_COMPLEX_DOUBLE_TYPE,
+  TI_COMPLEX_LONG_DOUBLE_TYPE,
+
+  TI_FLOAT_TYPE,
+  TI_DOUBLE_TYPE,
+  TI_LONG_DOUBLE_TYPE,
+
+  TI_FLOAT_PTR_TYPE,
+  TI_DOUBLE_PTR_TYPE,
+  TI_LONG_DOUBLE_PTR_TYPE,
+  TI_INTEGER_PTR_TYPE,
+
+  TI_VOID_TYPE,
+  TI_PTR_TYPE,
+  TI_CONST_PTR_TYPE,
+  TI_SIZE_TYPE,
+  TI_PID_TYPE,
+  TI_PTRDIFF_TYPE,
+  TI_VA_LIST_TYPE,
+  TI_VA_LIST_GPR_COUNTER_FIELD,
+  TI_VA_LIST_FPR_COUNTER_FIELD,
+  TI_BOOLEAN_TYPE,
+  TI_FILEPTR_TYPE,
+
+  TI_DFLOAT32_TYPE,
+  TI_DFLOAT64_TYPE,
+  TI_DFLOAT128_TYPE,
+  TI_DFLOAT32_PTR_TYPE,
+  TI_DFLOAT64_PTR_TYPE,
+  TI_DFLOAT128_PTR_TYPE,
+
+  TI_VOID_LIST_NODE,
+
+  TI_MAIN_IDENTIFIER,
+
+  TI_SAT_SFRACT_TYPE,
+  TI_SAT_FRACT_TYPE,
+  TI_SAT_LFRACT_TYPE,
+  TI_SAT_LLFRACT_TYPE,
+  TI_SAT_USFRACT_TYPE,
+  TI_SAT_UFRACT_TYPE,
+  TI_SAT_ULFRACT_TYPE,
+  TI_SAT_ULLFRACT_TYPE,
+  TI_SFRACT_TYPE,
+  TI_FRACT_TYPE,
+  TI_LFRACT_TYPE,
+  TI_LLFRACT_TYPE,
+  TI_USFRACT_TYPE,
+  TI_UFRACT_TYPE,
+  TI_ULFRACT_TYPE,
+  TI_ULLFRACT_TYPE,
+  TI_SAT_SACCUM_TYPE,
+  TI_SAT_ACCUM_TYPE,
+  TI_SAT_LACCUM_TYPE,
+  TI_SAT_LLACCUM_TYPE,
+  TI_SAT_USACCUM_TYPE,
+  TI_SAT_UACCUM_TYPE,
+  TI_SAT_ULACCUM_TYPE,
+  TI_SAT_ULLACCUM_TYPE,
+  TI_SACCUM_TYPE,
+  TI_ACCUM_TYPE,
+  TI_LACCUM_TYPE,
+  TI_LLACCUM_TYPE,
+  TI_USACCUM_TYPE,
+  TI_UACCUM_TYPE,
+  TI_ULACCUM_TYPE,
+  TI_ULLACCUM_TYPE,
+  TI_QQ_TYPE,
+  TI_HQ_TYPE,
+  TI_SQ_TYPE,
+  TI_DQ_TYPE,
+  TI_TQ_TYPE,
+  TI_UQQ_TYPE,
+  TI_UHQ_TYPE,
+  TI_USQ_TYPE,
+  TI_UDQ_TYPE,
+  TI_UTQ_TYPE,
+  TI_SAT_QQ_TYPE,
+  TI_SAT_HQ_TYPE,
+  TI_SAT_SQ_TYPE,
+  TI_SAT_DQ_TYPE,
+  TI_SAT_TQ_TYPE,
+  TI_SAT_UQQ_TYPE,
+  TI_SAT_UHQ_TYPE,
+  TI_SAT_USQ_TYPE,
+  TI_SAT_UDQ_TYPE,
+  TI_SAT_UTQ_TYPE,
+  TI_HA_TYPE,
+  TI_SA_TYPE,
+  TI_DA_TYPE,
+  TI_TA_TYPE,
+  TI_UHA_TYPE,
+  TI_USA_TYPE,
+  TI_UDA_TYPE,
+  TI_UTA_TYPE,
+  TI_SAT_HA_TYPE,
+  TI_SAT_SA_TYPE,
+  TI_SAT_DA_TYPE,
+  TI_SAT_TA_TYPE,
+  TI_SAT_UHA_TYPE,
+  TI_SAT_USA_TYPE,
+  TI_SAT_UDA_TYPE,
+  TI_SAT_UTA_TYPE,
+
+  TI_MAX
+};
+
+extern tree global_trees[TI_MAX];
+# 3801 "tree.h"
+enum integer_type_kind
+{
+  itk_char,
+  itk_signed_char,
+  itk_unsigned_char,
+  itk_short,
+  itk_unsigned_short,
+  itk_int,
+  itk_unsigned_int,
+  itk_long,
+  itk_unsigned_long,
+  itk_long_long,
+  itk_unsigned_long_long,
+  itk_none
+};
+
+typedef enum integer_type_kind integer_type_kind;
+
+
+
+extern tree integer_types[itk_none];
+# 3837 "tree.h"
+extern enum tls_model flag_tls_default;
+# 3861 "tree.h"
+enum ptrmemfunc_vbit_where_t
+{
+  ptrmemfunc_vbit_in_pfn,
+  ptrmemfunc_vbit_in_delta
+};
+
+
+
+extern tree decl_assembler_name (tree);
+extern bool decl_assembler_name_equal (tree decl, tree asmname);
+
+
+
+
+extern size_t tree_size (const_tree);
+
+
+
+
+extern size_t tree_code_size (enum tree_code);
+
+
+
+
+
+extern tree make_node_stat (enum tree_code );
+
+
+
+
+extern tree copy_node_stat (tree );
+
+
+
+
+extern tree copy_list (tree);
+
+
+extern tree make_tree_binfo_stat (unsigned );
+
+
+
+
+extern tree make_tree_vec_stat (int );
+
+
+
+
+extern void init_phinodes (void);
+extern void fini_phinodes (void);
+extern void release_phi_node (tree);
+
+
+
+
+extern void init_ssanames (void);
+extern void fini_ssanames (void);
+extern tree make_ssa_name (tree, tree);
+extern tree duplicate_ssa_name (tree, tree);
+extern void duplicate_ssa_name_ptr_info (tree, struct ptr_info_def *);
+extern void release_ssa_name (tree);
+extern void release_defs (tree);
+extern void replace_ssa_name_symbol (tree, tree);
+# 3932 "tree.h"
+extern tree get_identifier (const char *);
+# 3945 "tree.h"
+extern tree get_identifier_with_length (const char *, size_t);
+
+
+
+
+
+extern tree maybe_get_identifier (const char *);
+
+
+
+extern tree build_nt (enum tree_code, ...);
+extern tree build_nt_call_list (tree, tree);
+
+extern tree build0_stat (enum tree_code, tree );
+
+extern tree build1_stat (enum tree_code, tree, tree );
+
+extern tree build2_stat (enum tree_code, tree, tree, tree );
+
+extern tree build3_stat (enum tree_code, tree, tree, tree, tree );
+
+extern tree build4_stat (enum tree_code, tree, tree, tree, tree,
+    tree );
+
+extern tree build5_stat (enum tree_code, tree, tree, tree, tree, tree,
+    tree );
+
+extern tree build7_stat (enum tree_code, tree, tree, tree, tree, tree,
+    tree, tree, tree );
+
+
+
+extern tree build_gimple_modify_stmt_stat (tree, tree );
+
+
+
+extern tree build_int_cst (tree, HOST_WIDE_INT);
+extern tree build_int_cst_type (tree, HOST_WIDE_INT);
+extern tree build_int_cstu (tree, unsigned HOST_WIDE_INT);
+extern tree build_int_cst_wide (tree, unsigned HOST_WIDE_INT, HOST_WIDE_INT);
+extern tree build_int_cst_wide_type (tree,
+         unsigned HOST_WIDE_INT, HOST_WIDE_INT);
+extern tree build_vector (tree, tree);
+extern tree build_vector_from_ctor (tree, VEC_constructor_elt_gc *);
+extern tree build_constructor (tree, VEC_constructor_elt_gc *);
+extern tree build_constructor_single (tree, tree, tree);
+extern tree build_constructor_from_list (tree, tree);
+extern tree build_real_from_int_cst (tree, const_tree);
+extern tree build_complex (tree, tree, tree);
+extern tree build_one_cst (tree);
+extern tree build_string (int, const char *);
+extern tree build_tree_list_stat (tree, tree );
+
+extern tree build_decl_stat (enum tree_code, tree, tree );
+extern tree build_fn_decl (const char *, tree);
+
+extern tree build_block (tree, tree, tree, tree);
+
+extern void annotate_with_file_line (tree, const char *, int);
+extern void annotate_with_locus (tree, location_t);
+
+extern tree build_empty_stmt (void);
+extern tree build_omp_clause (enum omp_clause_code);
+
+extern tree build_vl_exp_stat (enum tree_code, int );
+
+
+extern tree build_call_list (tree, tree, tree);
+extern tree build_call_nary (tree, tree, int, ...);
+extern tree build_call_valist (tree, tree, int, va_list);
+extern tree build_call_array (tree, tree, int, tree*);
+
+
+
+extern tree make_signed_type (int);
+extern tree make_unsigned_type (int);
+extern tree signed_or_unsigned_type_for (int, tree);
+extern tree signed_type_for (tree);
+extern tree unsigned_type_for (tree);
+extern void initialize_sizetypes (bool);
+extern void set_sizetype (tree);
+extern void fixup_unsigned_type (tree);
+extern tree build_pointer_type_for_mode (tree, enum machine_mode, bool);
+extern tree build_pointer_type (tree);
+extern tree build_reference_type_for_mode (tree, enum machine_mode, bool);
+extern tree build_reference_type (tree);
+extern tree build_vector_type_for_mode (tree, enum machine_mode);
+extern tree build_vector_type (tree innertype, int nunits);
+extern tree build_type_no_quals (tree);
+extern tree build_index_type (tree);
+extern tree build_index_2_type (tree, tree);
+extern tree build_array_type (tree, tree);
+extern tree build_function_type (tree, tree);
+extern tree build_function_type_list (tree, ...);
+extern tree build_method_type_directly (tree, tree, tree);
+extern tree build_method_type (tree, tree);
+extern tree build_offset_type (tree, tree);
+extern tree build_complex_type (tree);
+extern tree build_resx (int);
+extern tree array_type_nelts (const_tree);
+extern bool in_array_bounds_p (tree);
+extern bool range_in_array_bounds_p (tree);
+
+extern tree value_member (tree, tree);
+extern tree purpose_member (const_tree, tree);
+
+extern int attribute_list_equal (const_tree, const_tree);
+extern int attribute_list_contained (const_tree, const_tree);
+extern int tree_int_cst_equal (const_tree, const_tree);
+extern int tree_int_cst_lt (const_tree, const_tree);
+extern int tree_int_cst_compare (const_tree, const_tree);
+extern int host_integerp (const_tree, int);
+extern HOST_WIDE_INT tree_low_cst (const_tree, int);
+extern int tree_int_cst_msb (const_tree);
+extern int tree_int_cst_sgn (const_tree);
+extern int tree_int_cst_sign_bit (const_tree);
+extern bool tree_expr_nonnegative_p (tree);
+extern bool tree_expr_nonnegative_warnv_p (tree, bool *);
+extern bool may_negate_without_overflow_p (const_tree);
+extern tree get_inner_array_type (const_tree);
+
+
+
+extern tree make_fract_type (int, int, int);
+extern tree make_accum_type (int, int, int);
+# 4101 "tree.h"
+extern tree make_tree (tree, rtx);
+
+
+
+
+
+
+
+extern tree build_type_attribute_variant (tree, tree);
+extern tree build_decl_attribute_variant (tree, tree);
+
+
+struct attribute_spec
+{
+
+
+  const char *const name;
+
+  const int min_length;
+
+
+  const int max_length;
+
+
+
+
+
+
+
+  const bool decl_required;
+
+
+  const bool type_required;
+
+
+
+
+  const bool function_type_required;
+# 4153 "tree.h"
+  tree (*const handler) (tree *node, tree name, tree args,
+     int flags, bool *no_add_attrs);
+};
+
+
+
+enum attribute_flags
+{
+
+
+
+  ATTR_FLAG_DECL_NEXT = 1,
+
+
+
+  ATTR_FLAG_FUNCTION_NEXT = 2,
+
+
+
+  ATTR_FLAG_ARRAY_NEXT = 4,
+
+
+  ATTR_FLAG_TYPE_IN_PLACE = 8,
+
+
+
+  ATTR_FLAG_BUILT_IN = 16
+};
+
+
+
+extern tree merge_decl_attributes (tree, tree);
+extern tree merge_type_attributes (tree, tree);
+
+
+
+
+extern int is_attribute_p (const char *, const_tree);
+
+
+
+
+extern tree lookup_attribute (const char *, tree);
+
+
+
+
+extern tree remove_attribute (const char *, tree);
+
+
+
+extern tree merge_attributes (tree, tree);
+# 4218 "tree.h"
+extern bool check_qualified_type (const_tree, const_tree, int);
+
+
+
+
+
+extern tree get_qualified_type (tree, int);
+
+
+
+
+extern tree build_qualified_type (tree, int);
+# 4243 "tree.h"
+extern tree build_distinct_type_copy (tree);
+extern tree build_variant_type_copy (tree);
+
+
+
+
+extern void finish_builtin_struct (tree, const char *,
+        tree, tree);
+
+
+
+
+
+extern void layout_type (tree);
+# 4265 "tree.h"
+typedef struct record_layout_info_s
+{
+
+  tree t;
+
+
+  tree offset;
+
+  unsigned int offset_align;
+
+  tree bitpos;
+
+  unsigned int record_align;
+
+
+  unsigned int unpacked_align;
+
+  tree prev_field;
+
+
+  tree pending_statics;
+
+  int remaining_in_alignment;
+
+
+  int packed_maybe_necessary;
+} *record_layout_info;
+
+extern record_layout_info start_record_layout (tree);
+extern tree bit_from_pos (tree, tree);
+extern tree byte_from_pos (tree, tree);
+extern void pos_from_bit (tree *, tree *, unsigned int, tree);
+extern void normalize_offset (tree *, tree *, unsigned int);
+extern tree rli_size_unit_so_far (record_layout_info);
+extern tree rli_size_so_far (record_layout_info);
+extern void normalize_rli (record_layout_info);
+extern void place_field (record_layout_info, tree);
+extern void compute_record_mode (tree);
+extern void finish_record_layout (record_layout_info, int);
+
+
+
+
+
+
+extern tree type_hash_canon (unsigned int, tree);
+# 4320 "tree.h"
+extern void layout_decl (tree, unsigned);
+
+
+
+
+extern void relayout_decl (tree);
+
+
+
+
+
+
+extern enum machine_mode mode_for_size_tree (const_tree, enum mode_class, int);
+
+
+
+extern tree non_lvalue (tree);
+
+extern tree convert (tree, tree);
+extern unsigned int expr_align (const_tree);
+extern tree expr_first (tree);
+extern tree expr_last (tree);
+extern tree expr_only (tree);
+extern tree size_in_bytes (const_tree);
+extern HOST_WIDE_INT int_size_in_bytes (const_tree);
+extern HOST_WIDE_INT max_int_size_in_bytes (const_tree);
+extern tree bit_position (const_tree);
+extern HOST_WIDE_INT int_bit_position (const_tree);
+extern tree byte_position (const_tree);
+extern HOST_WIDE_INT int_byte_position (const_tree);
+
+
+
+
+enum size_type_kind
+{
+  SIZETYPE,
+  SSIZETYPE,
+  BITSIZETYPE,
+  SBITSIZETYPE,
+  TYPE_KIND_LAST};
+
+extern tree sizetype_tab[(int) TYPE_KIND_LAST];
+
+
+
+
+
+
+extern tree size_int_kind (HOST_WIDE_INT, enum size_type_kind);
+extern tree size_binop (enum tree_code, tree, tree);
+extern tree size_diffop (tree, tree);
+
+
+
+
+
+
+extern tree round_up (tree, int);
+extern tree round_down (tree, int);
+extern tree get_pending_sizes (void);
+extern void put_pending_size (tree);
+extern void put_pending_sizes (tree);
+# 4392 "tree.h"
+extern unsigned int maximum_field_alignment;
+
+extern unsigned int initial_max_fld_align;
+
+
+
+
+
+extern tree chainon (tree, tree);
+
+
+
+extern tree tree_cons_stat (tree, tree, tree );
+
+
+
+
+extern tree tree_last (tree);
+
+
+
+extern tree nreverse (tree);
+
+
+
+
+extern int list_length (const_tree);
+
+
+
+extern int fields_length (const_tree);
+
+
+
+
+extern bool initializer_zerop (const_tree);
+# 4440 "tree.h"
+extern bool categorize_ctor_elements (const_tree, HOST_WIDE_INT *, HOST_WIDE_INT *,
+          bool *);
+
+extern HOST_WIDE_INT count_type_elements (const_tree, bool);
+
+
+
+extern int integer_zerop (const_tree);
+
+
+
+extern int integer_onep (const_tree);
+
+
+
+
+extern int integer_all_onesp (const_tree);
+
+
+
+
+extern int integer_pow2p (const_tree);
+
+
+
+
+extern int integer_nonzerop (const_tree);
+
+extern bool cst_and_fits_in_hwi (const_tree);
+extern tree num_ending_zeros (const_tree);
+
+
+
+
+extern int fixed_zerop (const_tree);
+
+
+
+
+extern tree staticp (tree);
+
+
+
+
+
+extern tree save_expr (tree);
+
+
+
+
+extern tree skip_simple_arithmetic (tree);
+
+
+
+enum tree_node_structure_enum tree_node_structure (const_tree);
+
+
+
+
+
+
+
+extern bool contains_placeholder_p (const_tree);
+# 4514 "tree.h"
+extern bool type_contains_placeholder_p (tree);
+
+
+
+
+
+
+extern tree substitute_in_expr (tree, tree, tree);
+# 4532 "tree.h"
+extern tree substitute_placeholder_in_expr (tree, tree);
+# 4547 "tree.h"
+extern tree variable_size (tree);
+
+
+
+
+
+extern tree stabilize_reference (tree);
+
+
+
+
+
+extern tree stabilize_reference_1 (tree);
+
+
+
+
+
+
+extern tree get_unwidened (tree, tree);
+
+
+
+
+
+
+extern tree get_narrower (tree, int *);
+
+
+
+
+
+extern tree get_inner_reference (tree, HOST_WIDE_INT *, HOST_WIDE_INT *,
+     tree *, enum machine_mode *, int *, int *,
+     bool);
+
+
+
+
+
+extern bool contains_packed_reference (const_tree exp);
+
+
+
+extern int handled_component_p (const_tree);
+
+
+
+
+extern tree array_ref_element_size (tree);
+
+
+
+
+extern tree array_ref_low_bound (tree);
+
+
+
+
+extern tree array_ref_up_bound (tree);
+
+
+
+
+extern tree component_ref_field_offset (tree);
+
+
+
+
+extern tree get_containing_scope (const_tree);
+
+
+
+extern tree decl_function_context (const_tree);
+
+
+
+extern tree decl_type_context (const_tree);
+
+
+extern int real_zerop (const_tree);
+
+
+
+
+
+
+extern int pedantic_lvalues;
+
+
+
+extern tree current_function_decl;
+
+
+extern const char * current_function_func_begin_label;
+
+
+typedef struct {
+  tree fntype;
+  tree next;
+} function_args_iterator;
+
+
+
+static __inline__ void
+function_args_iter_init (function_args_iterator *i, tree fntype)
+{
+  i->fntype = fntype;
+  i->next = ((fntype)->type.values);
+}
+
+
+
+
+static __inline__ tree *
+function_args_iter_cond_ptr (function_args_iterator *i)
+{
+  return (i->next) ? &(TREE_LIST_CHECK (i->next)->list.value) : NULL;
+}
+
+
+
+
+static __inline__ tree
+function_args_iter_cond (function_args_iterator *i)
+{
+  return (i->next) ? (TREE_LIST_CHECK (i->next)->list.value) : (tree) NULL;
+}
+
+
+static __inline__ void
+function_args_iter_next (function_args_iterator *i)
+{
+  gcc_assert (i->next != (tree) NULL);
+  i->next = ((i->next)->common.chain);
+}
+# 4703 "tree.h"
+extern unsigned crc32_string (unsigned, const char *);
+extern void clean_symbol_name (char *);
+extern tree get_file_function_name (const char *);
+extern tree get_callee_fndecl (const_tree);
+extern void change_decl_assembler_name (tree, tree);
+extern int type_num_arguments (const_tree);
+extern bool associative_tree_code (enum tree_code);
+extern bool commutative_tree_code (enum tree_code);
+extern tree upper_bound_in_type (tree, tree);
+extern tree lower_bound_in_type (tree, tree);
+extern int operand_equal_for_phi_arg_p (const_tree, const_tree);
+extern bool empty_body_p (tree);
+extern tree call_expr_arg (tree, int);
+extern tree *call_expr_argp (tree, int);
+extern tree call_expr_arglist (tree);
+extern bool stdarg_p (tree);
+extern bool prototype_p (tree);
+extern int function_args_count (tree);
+extern bool auto_var_in_fn_p (const_tree, const_tree);
+
+
+
+extern void expand_expr_stmt (tree);
+extern int warn_if_unused_value (const_tree, location_t);
+extern void expand_label (tree);
+extern void expand_goto (tree);
+
+extern rtx expand_stack_save (void);
+extern void expand_stack_restore (tree);
+extern void expand_return (tree);
+extern int is_body_block (const_tree);
+
+
+extern void using_eh_for_cleanups (void);
+
+
+
+
+
+extern int folding_initializer;
+
+
+extern int native_encode_expr (const_tree, unsigned char *, int);
+extern tree native_interpret_expr (tree, const unsigned char *, int);
+
+
+
+
+
+
+
+extern tree fold (tree);
+extern tree fold_unary (enum tree_code, tree, tree);
+extern tree fold_binary (enum tree_code, tree, tree, tree);
+extern tree fold_ternary (enum tree_code, tree, tree, tree, tree);
+extern tree fold_build1_stat (enum tree_code, tree, tree );
+
+extern tree fold_build2_stat (enum tree_code, tree, tree, tree );
+
+extern tree fold_build3_stat (enum tree_code, tree, tree, tree, tree );
+
+extern tree fold_build1_initializer (enum tree_code, tree, tree);
+extern tree fold_build2_initializer (enum tree_code, tree, tree, tree);
+extern tree fold_build3_initializer (enum tree_code, tree, tree, tree, tree);
+extern tree fold_build_call_array (tree, tree, int, tree *);
+extern tree fold_build_call_array_initializer (tree, tree, int, tree *);
+extern bool fold_convertible_p (const_tree, const_tree);
+extern tree fold_convert (tree, tree);
+extern tree fold_single_bit_test (enum tree_code, tree, tree, tree);
+extern tree fold_ignored_result (tree);
+extern tree fold_abs_const (tree, tree);
+extern tree fold_indirect_ref_1 (tree, tree);
+extern void fold_defer_overflow_warnings (void);
+extern void fold_undefer_overflow_warnings (bool, const_tree, int);
+extern void fold_undefer_and_ignore_overflow_warnings (void);
+extern bool fold_deferring_overflow_warnings_p (void);
+extern tree maybe_fold_offset_to_reference (tree, tree, tree);
+
+extern tree force_fit_type_double (tree, unsigned HOST_WIDE_INT, HOST_WIDE_INT,
+       int, bool);
+
+extern int fit_double_type (unsigned HOST_WIDE_INT, HOST_WIDE_INT,
+       unsigned HOST_WIDE_INT *, HOST_WIDE_INT *, const_tree);
+extern int add_double_with_sign (unsigned HOST_WIDE_INT, HOST_WIDE_INT,
+     unsigned HOST_WIDE_INT, HOST_WIDE_INT,
+     unsigned HOST_WIDE_INT *, HOST_WIDE_INT *,
+     bool);
+
+
+extern int neg_double (unsigned HOST_WIDE_INT, HOST_WIDE_INT,
+         unsigned HOST_WIDE_INT *, HOST_WIDE_INT *);
+extern int mul_double_with_sign (unsigned HOST_WIDE_INT, HOST_WIDE_INT,
+     unsigned HOST_WIDE_INT, HOST_WIDE_INT,
+     unsigned HOST_WIDE_INT *, HOST_WIDE_INT *,
+     bool);
+
+
+extern void lshift_double (unsigned HOST_WIDE_INT, HOST_WIDE_INT,
+      HOST_WIDE_INT, unsigned int,
+      unsigned HOST_WIDE_INT *, HOST_WIDE_INT *, int);
+extern void rshift_double (unsigned HOST_WIDE_INT, HOST_WIDE_INT,
+      HOST_WIDE_INT, unsigned int,
+      unsigned HOST_WIDE_INT *, HOST_WIDE_INT *, int);
+extern void lrotate_double (unsigned HOST_WIDE_INT, HOST_WIDE_INT,
+       HOST_WIDE_INT, unsigned int,
+       unsigned HOST_WIDE_INT *, HOST_WIDE_INT *);
+extern void rrotate_double (unsigned HOST_WIDE_INT, HOST_WIDE_INT,
+       HOST_WIDE_INT, unsigned int,
+       unsigned HOST_WIDE_INT *, HOST_WIDE_INT *);
+
+extern int div_and_round_double (enum tree_code, int, unsigned HOST_WIDE_INT,
+     HOST_WIDE_INT, unsigned HOST_WIDE_INT,
+     HOST_WIDE_INT, unsigned HOST_WIDE_INT *,
+     HOST_WIDE_INT *, unsigned HOST_WIDE_INT *,
+     HOST_WIDE_INT *);
+
+enum operand_equal_flag
+{
+  OEP_ONLY_CONST = 1,
+  OEP_PURE_SAME = 2
+};
+
+extern int operand_equal_p (const_tree, const_tree, unsigned int);
+extern int multiple_of_p (tree, const_tree, const_tree);
+extern tree omit_one_operand (tree, tree, tree);
+extern tree omit_two_operands (tree, tree, tree, tree);
+extern tree invert_truthvalue (tree);
+extern tree fold_truth_not_expr (tree);
+extern tree fold_unary_to_constant (enum tree_code, tree, tree);
+extern tree fold_binary_to_constant (enum tree_code, tree, tree, tree);
+extern tree fold_read_from_constant_string (tree);
+extern tree int_const_binop (enum tree_code, const_tree, const_tree, int);
+extern tree build_fold_addr_expr (tree);
+extern tree fold_build_cleanup_point_expr (tree type, tree expr);
+extern tree fold_strip_sign_ops (tree);
+extern tree build_fold_addr_expr_with_type (tree, tree);
+extern tree build_fold_indirect_ref (tree);
+extern tree fold_indirect_ref (tree);
+extern tree constant_boolean_node (int, tree);
+extern tree build_low_bits_mask (tree, unsigned);
+
+extern bool tree_swap_operands_p (const_tree, const_tree, bool);
+extern void swap_tree_operands (tree, tree *, tree *);
+extern enum tree_code swap_tree_comparison (enum tree_code);
+
+extern bool ptr_difference_const (tree, tree, HOST_WIDE_INT *);
+extern enum tree_code invert_tree_comparison (enum tree_code, bool);
+
+extern bool tree_expr_nonzero_p (tree);
+extern bool tree_expr_nonzero_warnv_p (tree, bool *);
+
+
+extern tree fold_call_expr (tree, bool);
+extern tree fold_builtin_fputs (tree, tree, bool, bool, tree);
+extern tree fold_builtin_strcpy (tree, tree, tree, tree);
+extern tree fold_builtin_strncpy (tree, tree, tree, tree, tree);
+extern tree fold_builtin_memory_chk (tree, tree, tree, tree, tree, tree, bool,
+         enum built_in_function);
+extern tree fold_builtin_stxcpy_chk (tree, tree, tree, tree, tree, bool,
+         enum built_in_function);
+extern tree fold_builtin_strncpy_chk (tree, tree, tree, tree, tree);
+extern tree fold_builtin_snprintf_chk (tree, tree, enum built_in_function);
+extern bool fold_builtin_next_arg (tree, bool);
+extern enum built_in_function builtin_mathfn_code (const_tree);
+extern tree build_function_call_expr (tree, tree);
+extern tree fold_builtin_call_array (tree, tree, int, tree *);
+extern void debug_fold_checksum (const_tree);
+extern tree build_call_expr (tree, int, ...);
+extern tree mathfn_built_in (tree, enum built_in_function fn);
+extern tree strip_float_extensions (tree);
+extern tree c_strlen (tree, int);
+extern tree std_gimplify_va_arg_expr (tree, tree, tree *, tree *);
+extern tree build_va_arg_indirect_ref (tree);
+extern tree build_string_literal (int, const char *);
+extern bool validate_arglist (const_tree, ...);
+extern rtx builtin_memset_read_str (void *, HOST_WIDE_INT, enum machine_mode);
+extern int get_pointer_alignment (tree, unsigned int);
+
+
+extern tree strip_float_extensions (tree);
+
+
+extern void record_component_aliases (tree);
+extern alias_set_type get_alias_set (tree);
+extern int alias_sets_conflict_p (alias_set_type, alias_set_type);
+extern int alias_sets_must_conflict_p (alias_set_type, alias_set_type);
+extern int objects_must_conflict_p (tree, tree);
+
+
+extern int really_constant_p (const_tree);
+extern int int_fits_type_p (const_tree, const_tree);
+
+extern void get_type_static_bounds (const_tree, mpz_t, mpz_t);
+
+extern bool variably_modified_type_p (tree, tree);
+extern int tree_log2 (const_tree);
+extern int tree_floor_log2 (const_tree);
+extern int simple_cst_equal (const_tree, const_tree);
+extern hashval_t iterative_hash_expr (const_tree, hashval_t);
+extern int compare_tree_int (const_tree, unsigned HOST_WIDE_INT);
+extern int type_list_equal (const_tree, const_tree);
+extern int chain_member (const_tree, const_tree);
+extern tree type_hash_lookup (unsigned int, tree);
+extern void type_hash_add (unsigned int, tree);
+extern int simple_cst_list_equal (const_tree, const_tree);
+extern void dump_tree_statistics (void);
+extern void expand_function_end (void);
+extern void expand_function_start (tree);
+extern void stack_protect_prologue (void);
+extern void stack_protect_epilogue (void);
+extern void recompute_tree_invariant_for_addr_expr (tree);
+extern bool needs_to_live_in_memory (const_tree);
+extern tree reconstruct_complex_type (tree, tree);
+
+extern int real_onep (const_tree);
+extern int real_twop (const_tree);
+extern int real_minus_onep (const_tree);
+extern void init_ttree (void);
+extern void build_common_tree_nodes (bool, bool);
+extern void build_common_tree_nodes_2 (int);
+extern void build_common_builtin_nodes (void);
+extern tree build_nonstandard_integer_type (unsigned HOST_WIDE_INT, int);
+extern tree build_range_type (tree, tree, tree);
+extern HOST_WIDE_INT int_cst_value (const_tree);
+extern tree build_addr (tree, tree);
+
+extern bool fields_compatible_p (const_tree, const_tree);
+extern tree find_compatible_field (tree, tree);
+
+extern location_t expr_location (const_tree);
+extern void set_expr_location (tree, location_t);
+extern bool expr_has_location (const_tree);
+
+
+
+
+
+extern source_locus expr_locus (const_tree);
+extern void set_expr_locus (tree, source_locus loc);
+
+extern const char *expr_filename (const_tree);
+extern int expr_lineno (const_tree);
+
+extern tree *tree_block (tree);
+extern tree *generic_tree_operand (tree, int);
+extern tree *generic_tree_type (tree);
+extern location_t *block_nonartificial_location (tree);
+
+
+extern void expand_main_function (void);
+extern void init_dummy_function_start (void);
+extern void expand_dummy_function_end (void);
+extern unsigned int init_function_for_compilation (void);
+extern void allocate_struct_function (tree, bool);
+extern void push_struct_function (tree fndecl);
+extern void init_function_start (tree);
+extern bool use_register_for_decl (const_tree);
+extern void generate_setjmp_warnings (void);
+extern void init_temp_slots (void);
+extern void free_temp_slots (void);
+extern void pop_temp_slots (void);
+extern void push_temp_slots (void);
+extern void preserve_temp_slots (rtx);
+extern int aggregate_value_p (const_tree, const_tree);
+extern void push_function_context (void);
+extern void pop_function_context (void);
+extern void push_function_context_to (tree);
+extern void pop_function_context_from (tree);
+extern tree gimplify_parameters (void);
+
+
+
+
+
+
+
+extern void debug_tree (tree);
+# 4988 "tree.h"
+extern bool debug_find_tree (tree, tree);
+
+
+extern tree unsave_expr_now (tree);
+extern tree build_duplicate_type (tree);
+# 5024 "tree.h"
+extern int flags_from_decl_or_type (const_tree);
+extern int call_expr_flags (const_tree);
+
+extern int setjmp_call_p (const_tree);
+extern bool alloca_call_p (const_tree);
+extern bool must_pass_in_stack_var_size (enum machine_mode, const_tree);
+extern bool must_pass_in_stack_var_size_or_pad (enum machine_mode, const_tree);
+
+
+
+extern const struct attribute_spec *lookup_attribute_spec (tree);
+# 5044 "tree.h"
+extern tree decl_attributes (tree *, tree, int);
+
+
+extern void set_decl_abstract_flags (tree, int);
+extern void set_decl_origin_self (tree);
+
+
+extern void set_min_and_max_values_for_integral_type (tree, int, bool);
+extern void fixup_signed_type (tree);
+extern void internal_reference_types (void);
+extern unsigned int update_alignment_for_field (record_layout_info, tree,
+                                                unsigned int);
+
+extern void make_decl_rtl (tree);
+extern void make_decl_one_only (tree);
+extern int supports_one_only (void);
+extern void resolve_unique_section (tree, int, int);
+extern void mark_referenced (tree);
+extern void mark_decl_referenced (tree);
+extern void notice_global_symbol (tree);
+extern void set_user_assembler_name (tree, const char *);
+extern void process_pending_assemble_externals (void);
+extern void finish_aliases_1 (void);
+extern void finish_aliases_2 (void);
+extern tree emutls_decl (tree);
+
+
+extern void expand_computed_goto (tree);
+extern bool parse_output_constraint (const char **, int, int, int,
+         bool *, bool *, bool *);
+extern bool parse_input_constraint (const char **, int, int, int, int,
+        const char * const *, bool *, bool *);
+extern void expand_asm_expr (tree);
+extern tree resolve_asm_operand_names (tree, tree, tree);
+extern void expand_case (tree);
+extern void expand_decl (tree);
+extern void expand_anon_union_decl (tree, tree, tree);
+
+
+
+
+
+
+extern tree create_artificial_label (void);
+extern void gimplify_function_tree (tree);
+extern const char *get_name (const_tree);
+extern tree unshare_expr (tree);
+extern void sort_case_labels (tree);
+
+
+
+
+
+extern char *dwarf2out_cfi_label (void);
+
+
+
+extern void dwarf2out_def_cfa (const char *, unsigned, HOST_WIDE_INT);
+
+
+
+extern void dwarf2out_window_save (const char *);
+
+
+
+
+extern void dwarf2out_args_size (const char *, HOST_WIDE_INT);
+
+
+
+extern void dwarf2out_reg_save (const char *, unsigned, HOST_WIDE_INT);
+
+
+
+extern void dwarf2out_return_save (const char *, HOST_WIDE_INT);
+
+
+
+extern void dwarf2out_return_reg (const char *, unsigned);
+
+
+
+extern void dwarf2out_reg_save_reg (const char *, rtx, rtx);
+
+
+
+
+
+struct pointer_set_t;
+
+
+
+typedef tree (*walk_tree_fn) (tree *, int *, void *);
+
+
+
+typedef tree (*walk_tree_lh) (tree *, int *, tree (*) (tree *, int *, void *),
+         void *, struct pointer_set_t*);
+
+extern tree walk_tree_1 (tree*, walk_tree_fn, void*, struct pointer_set_t*,
+    walk_tree_lh);
+extern tree walk_tree_without_duplicates_1 (tree*, walk_tree_fn, void*,
+         walk_tree_lh);
+
+
+
+
+
+
+
+extern void set_decl_rtl (tree, rtx);
+extern void set_decl_incoming_rtl (tree, rtx, bool);
+
+
+
+typedef enum
+{
+  d_kind,
+  t_kind,
+  b_kind,
+  s_kind,
+  r_kind,
+  e_kind,
+  c_kind,
+  id_kind,
+  perm_list_kind,
+  temp_list_kind,
+  vec_kind,
+  binfo_kind,
+  phi_kind,
+  ssa_name_kind,
+  constr_kind,
+  x_kind,
+  lang_decl,
+  lang_type,
+  omp_clause_kind,
+  gimple_stmt_kind,
+  all_kinds
+} tree_node_kind;
+
+extern int tree_node_counts[];
+extern int tree_node_sizes[];
+
+
+
+
+extern bool in_gimple_form;
+
+
+extern tree get_base_address (tree t);
+
+
+extern void vect_set_verbosity_level (const char *);
+
+
+
+struct tree_map_base
+{
+  tree from;
+};
+
+extern int tree_map_base_eq (const void *, const void *);
+extern unsigned int tree_map_base_hash (const void *);
+extern int tree_map_base_marked_p (const void *);
+
+
+
+struct tree_map
+{
+  struct tree_map_base base;
+  unsigned int hash;
+  tree to;
+};
+
+
+extern unsigned int tree_map_hash (const void *);
+
+
+
+
+struct tree_int_map
+{
+  struct tree_map_base base;
+  unsigned int to;
+};
+
+
+
+
+
+
+
+struct tree_priority_map
+{
+  struct tree_map_base base;
+  priority_type init;
+  priority_type fini;
+};
+
+
+
+
+
+
+extern tree tree_mem_ref_addr (tree, tree);
+extern void copy_mem_ref_info (tree, tree);
+
+
+extern bool ssa_name_nonzero_p (const_tree);
+extern bool ssa_name_nonnegative_p (const_tree);
+
+
+extern void init_object_sizes (void);
+extern void fini_object_sizes (void);
+extern unsigned HOST_WIDE_INT compute_builtin_object_size (tree, int);
+
+
+extern unsigned HOST_WIDE_INT highest_pow2_factor (const_tree);
+
+
+
+void init_inline_once (void);
+
+
+
+
+static __inline__ int
+tree_operand_length (const_tree node)
+{
+  if ((tree_code_type[(int) (((enum tree_code) (node)->base.code))] == tcc_vl_exp))
+    return ((int)((INTEGER_CST_CHECK ((node)->exp.operands[0])->int_cst.int_cst).low));
+  else
+    return tree_code_length[(int) (((enum tree_code) (node)->base.code))];
+}
+
+
+
+
+
+
+typedef struct call_expr_arg_iterator_d
+{
+  tree t;
+  int n;
+  int i;
+} call_expr_arg_iterator;
+
+typedef struct const_call_expr_arg_iterator_d
+{
+  const_tree t;
+  int n;
+  int i;
+} const_call_expr_arg_iterator;
+
+
+
+static __inline__ void
+init_call_expr_arg_iterator (tree exp, call_expr_arg_iterator *iter)
+{
+  iter->t = exp;
+  iter->n = (((int)((INTEGER_CST_CHECK ((exp)->exp.operands[0])->int_cst.int_cst).low)) - 3);
+  iter->i = 0;
+}
+
+static __inline__ void
+init_const_call_expr_arg_iterator (const_tree exp, const_call_expr_arg_iterator *iter)
+{
+  iter->t = exp;
+  iter->n = (((int)((INTEGER_CST_CHECK ((exp)->exp.operands[0])->int_cst.int_cst).low)) - 3);
+  iter->i = 0;
+}
+
+
+
+static __inline__ tree
+next_call_expr_arg (call_expr_arg_iterator *iter)
+{
+  tree result;
+  if (iter->i >= iter->n)
+    return (tree) NULL;
+  result = ((CALL_EXPR_CHECK (iter->t))->exp.operands[(iter->i) + 3]);
+  iter->i++;
+  return result;
+}
+
+static __inline__ const_tree
+next_const_call_expr_arg (const_call_expr_arg_iterator *iter)
+{
+  const_tree result;
+  if (iter->i >= iter->n)
+    return (tree) NULL;
+  result = ((CALL_EXPR_CHECK (iter->t))->exp.operands[(iter->i) + 3]);
+  iter->i++;
+  return result;
+}
+
+
+
+
+
+static __inline__ tree
+first_call_expr_arg (tree exp, call_expr_arg_iterator *iter)
+{
+  init_call_expr_arg_iterator (exp, iter);
+  return next_call_expr_arg (iter);
+}
+
+static __inline__ const_tree
+first_const_call_expr_arg (const_tree exp, const_call_expr_arg_iterator *iter)
+{
+  init_const_call_expr_arg_iterator (exp, iter);
+  return next_const_call_expr_arg (iter);
+}
+
+
+
+static __inline__ bool
+more_call_expr_args_p (const call_expr_arg_iterator *iter)
+{
+  return (iter->i < iter->n);
+}
+
+static __inline__ bool
+more_const_call_expr_args_p (const const_call_expr_arg_iterator *iter)
+{
+  return (iter->i < iter->n);
+}

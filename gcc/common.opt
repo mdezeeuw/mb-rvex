@@ -1303,6 +1303,72 @@ w
 Common Var(inhibit_warnings)
 Suppress warnings
 
+ffpga-instructions
+Common Var(fpga_instructions) Init(0) Undocumented
+Enable instruction use for set,execute and transfer to fpga using pragma call_hw
+
+ffpga-calls
+Common Var(fpga_calls) Init(1) Undocumented
+Enable function call use for set,execute and transfer to fpga using pragma call_hw
+
+ffpga
+Common Var(fpga) Init(0)
+Enable calls to fpga using pragma call_hw
+
+fdiopsis
+Common Var(diopsis) Init(0)
+Enable calls to diopsis using pragma call_hw
+
+fdspstat
+Common Var(dspstat)
+Generate statistics for dsp calls
+
+fremwait
+Common Var(remwait)
+Disable nowait feature in remote calls
+
+ffpgastat
+Common Var(fpgastat)
+Generate statistics for fpga calls
+
+fgppstat
+Common Var(gppstat)
+Generate statistics for gpp calls
+
+fdsp-call_hw
+Common Var(dspforce)
+Force call_hw to be expanded for DSP
+
+fhartes-configuration-xml 
+Common RejectNegative UInteger Joined Var(hartes_configuration_xml) Init(1) Undocumented
+If set the configuration file will be an xml file.
+
+fhartes-configuration-file=
+Common RejectNegative Joined Var(hartes_configuration_file_name) Init("hartes.xml")
+Specify the name of the hartes xml configuration file.
+
+ffpga-configuration-text
+Common RejectNegative UInteger Joined Var(fpga_configuration_text) Undocumented 
+If set the configuration file will be a text file.
+
+ffpga-configuration-file=
+Common RejectNegative Joined Var(fpga_configuration_file_name) Init("fpga_config.ini") Undocumented
+Specify the name of the configuration file for fpga.
+
+ffpga-pass-debug-level=
+Common RejectNegative UInteger Joined Var(fpga_pass_debug_level) Init(0) Undocumented
+
+fdiopsis-pass-debug-level=
+Common RejectNegative UInteger Joined Var(diopsis_pass_debug_level) Init(0) Undocumented
+
+ffpga-generate-set
+Common Var(fpga_call_generate_set) Init(1)
+Enable/disable generation of set instruction for fpga calls
+
+ffpga-instructions-generate-set
+Common Var(fpga_instructions_generate_set) Init(0)
+Enable/disable generation of set instruction for fpga calls
+
 shared
 Common RejectNegative Negative(pie)
 Create a shared library

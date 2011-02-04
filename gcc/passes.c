@@ -479,6 +479,9 @@ init_optimization_passes (void)
   NEXT_PASS (pass_remove_useless_stmts);
   NEXT_PASS (pass_mudflap_1);
   NEXT_PASS (pass_lower_omp);
+  NEXT_PASS (pass_diopsis_replace_calls_tree);
+  NEXT_PASS (pass_fpga_replace_calls_tree);
+  NEXT_PASS (pass_fpga_parallel_optimisation);
   NEXT_PASS (pass_lower_cf);
   NEXT_PASS (pass_refactor_eh);
   NEXT_PASS (pass_lower_eh);

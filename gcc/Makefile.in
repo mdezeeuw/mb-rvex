@@ -893,7 +893,7 @@ BUILD_LIBDEPS= $(BUILD_LIBIBERTY)
 
 # How to link with both our special library facilities
 # and the system's installed libraries.
-LIBS = @LIBS@ $(CPPLIB) $(LIBINTL) $(LIBICONV) $(LIBIBERTY) $(LIBDECNUMBER)
+LIBS = @LIBS@ $(CPPLIB) $(LIBINTL) $(LIBICONV) $(LIBIBERTY) $(LIBDECNUMBER) -lexpat
 
 # Any system libraries needed just for GNAT.
 SYSLIBS = @GNAT_LIBEXC@
@@ -1240,7 +1240,12 @@ OBJS-common = \
 	version.o \
 	vmsdbgout.o \
 	web.o \
-	xcoffout.o
+	xcoffout.o \
+ 	fpga.o \
+ 	diopsis.o \
+ 	fpga-config.o \
+ 	fpga-pass-utils.o \
+ 	hxml.o
 
 # Target object files.
 OBJS-md = $(out_object_file)
@@ -1264,7 +1269,8 @@ OBJS-archive = \
 	matrix-reorg.o \
 	tree-inline.o \
 	tree-nomudflap.o \
-	varpool.o
+	varpool.o \
+	fpga.o 
 
 OBJS = $(OBJS-common) $(OBJS-md) $(OBJS-archive)
 

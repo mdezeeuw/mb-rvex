@@ -921,6 +921,24 @@ c_invoke_pragma_handler (unsigned int id)
 void
 init_pragma (void)
 {
+	/* HARTES pragmas */
+  if (flag_molopenmp)
+    {
+      struct omp_pragma_def { const char *name; unsigned int id; };
+      static const struct omp_pragma_def omp_pragmas[] = {
+        { "section", PRAGMA_OMP_SECTION },
+        { "sections", PRAGMA_OMP_SECTIONS },
+	{ "parallel", PRAGMA_OMP_PARALLEL }
+      };
+
+      const int n_omp_pragmas = sizeof (omp_pragmas) / sizeof (*omp_pragmas);
+      int i;
+
+      for (i = 0; i < n_omp_pragmas; ++i)
+        cpp_register_deferred_pragma (parse_in, "omp", omp_pragmas[i].name,
+                                      omp_pragmas[i].id, true, true);
+    }
+    
   if (flag_openmp && !flag_preprocess_only)
     {
       struct omp_pragma_def { const char *name; unsigned int id; };

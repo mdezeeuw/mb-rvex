@@ -674,6 +674,9 @@ fopenmp
 C ObjC C++ ObjC++ Var(flag_openmp)
 Enable OpenMP
 
+fmolomp
+C ObjC C++ ObjC++ Var(flag_molopenmp)
+
 foperator-names
 C++ ObjC++
 Recognize C++ kewords like \"compl\" and \"xor\"

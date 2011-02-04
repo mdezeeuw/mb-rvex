@@ -329,6 +329,10 @@ extern struct tree_opt_pass pass_rebuild_cgraph_edges;
 extern struct tree_opt_pass pass_build_cgraph_edges;
 extern struct tree_opt_pass pass_reset_cc_flags;
 
+extern struct tree_opt_pass pass_fpga_replace_calls_tree;
+extern struct tree_opt_pass pass_fpga_parallel_optimisation;
+extern struct tree_opt_pass pass_diopsis_parallel_optimisation;
+extern struct tree_opt_pass pass_diopsis_replace_calls_tree;
 /* IPA Passes */
 extern struct tree_opt_pass pass_ipa_matrix_reorg;
 extern struct tree_opt_pass pass_ipa_cp;

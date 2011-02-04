@@ -1786,7 +1786,11 @@ common_handle_option (size_t scode, const char *arg, int value,
     case OPT_fforce_addr:
       /* These are no-ops, preserved for backward compatibility.  */
       break;
-
+ 	case OPT_ffpga_configuration_file_:
+      fpga_configuration_file_name = XNEWVEC(char, strlen(arg)+1);
+      strcpy(fpga_configuration_file_name, arg);
+      break;
+      
     default:
       /* If the flag was handled in a standard way, assume the lack of
 	 processing here is intentional.  */
