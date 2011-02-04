@@ -1,0 +1,16 @@
+K 10
+svn:ignore
+V 106
+TAGS
+TAGS.sub
+GPATH
+GRTAGS
+GSYMS
+GTAGS
+cscope.files
+cscope.out
+cscope.in.out
+cscope.po.out
+autom4te.cache
+
+END

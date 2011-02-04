@@ -1,0 +1,79 @@
+10
+
+dir
+169357
+svn://gcc.gnu.org/svn/gcc/tags/microblaze-4.3.4/gcc/testsuite/gcc.target
+svn://gcc.gnu.org/svn/gcc
+
+
+
+2009-11-24T17:11:01.818832Z
+154509
+eager
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+138bc75d-0d04-0410-961f-82ee72b054a4
+
+powerpc
+dir
+
+arm
+dir
+
+m68k
+dir
+
+alpha
+dir
+
+microblaze
+dir
+
+i386
+dir
+
+xstormy16
+dir
+
+frv
+dir
+
+x86_64
+dir
+
+s390
+dir
+
+cris
+dir
+
+ia64
+dir
+
+spu
+dir
+
+sparc
+dir
+
+mips
+dir
+
+sh
+dir
+
+bfin
+dir
+

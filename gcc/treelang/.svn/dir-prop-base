@@ -1,0 +1,12 @@
+K 10
+svn:ignore
+V 57
+TAGS
+TAGS.sub
+lex.c
+parse.c
+parse.h
+parse.output
+*.info*
+
+END

@@ -1,0 +1,9 @@
+This project has been created by M. de Zeeuw
+
+The orignal gcc source files for the Xilinx MicroBlaze gcc compiler can be found at:
+4.3.4 TAG: http://gcc.gnu.org/viewcvs/tags/microblaze-4.3.4/
+
+Github by Xinlinx: http://git.xilinx.com/
+
+Files hosted here are only the folder /src/gcc/gcc/ and the build scripts.
+
