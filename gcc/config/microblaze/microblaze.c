@@ -48,6 +48,8 @@
 #include "gstab.h"
 #include "df.h"
 
+#include "cpplib.h"
+
 /* Classifies an address.
 
 ADDRESS_INVALID
@@ -106,6 +108,11 @@ struct microblaze_address_info
   rtx symbol; 	/* Contains valid values on ADDRESS_SYMBOLIC */
   enum microblaze_symbol_type symbol_type;
 };
+
+
+/* pragma fpga support */
+static void microblaze_insert_attributes 		(tree decl, tree *attributes);
+
 
 static void microblaze_encode_section_info	(tree, rtx, int);
 static void microblaze_globalize_label          (FILE*, const char*);
@@ -354,15 +361,20 @@ enum reg_class microblaze_char_to_class[256] =
 int interrupt_handler;
 int save_volatiles;
 
-const struct attribute_spec microblaze_attribute_table[] = {
-  /* name         min_len, max_len, decl_req, type_req, fn_type, req_handler */
-  {"interrupt_handler", 0,       0,     true,    false,   false,        NULL},
-  {"save_volatiles"   , 0,       0,     true,    false,   false,        NULL},
-  { NULL,        	0,       0,    false,    false,   false,        NULL}
-};
+
 
 static int microblaze_interrupt_function_p (tree);
 static int microblaze_save_volatiles (tree);
+
+/* Support for pragma call_hw */
+static char comp_name[256];
+static int comp_id;
+static tree microblaze_handle_call_hw_attribute (tree *, tree, tree, int, bool *);
+tree call_hw_tree = NULL_TREE;
+tree call_hw_comp = NULL_TREE;
+int hartes_rpc_uid = 0;
+static microblaze_hfunc_attr_t* hfunc_attr=NULL;
+
 
 section *sdata2_section;
 
@@ -389,6 +401,10 @@ section *sdata2_section;
 
 #undef TARGET_ATTRIBUTE_TABLE
 #define TARGET_ATTRIBUTE_TABLE          microblaze_attribute_table
+
+/* Support for pragma call_hw */
+#undef TARGET_INSERT_ATTRIBUTES
+#define TARGET_INSERT_ATTRIBUTES 		microblaze_insert_attributes
 
 #undef TARGET_ASM_CONSTRUCTOR
 #define TARGET_ASM_CONSTRUCTOR          microblaze_asm_constructor
@@ -425,10 +441,180 @@ section *sdata2_section;
 #undef TARGET_PROMOTE_FUNCTION_RETURN
 #define TARGET_PROMOTE_FUNCTION_RETURN 	hook_bool_tree_true
 
+const struct attribute_spec microblaze_attribute_table[] = {
+  /* name         min_len, max_len, decl_req, type_req, fn_type, req_handler */
+  {"interrupt_handler", 0,       0,     true,    false,   false,        NULL},
+  {"save_volatiles"   , 0,       0,     true,    false,   false,        NULL},
+  /* Support for pragma call_hw */
+  { "call_hw", 0, 4, true, false, false, microblaze_handle_call_hw_attribute },
+  { NULL,        	0,       0,    false,    false,   false,        NULL}
+};
 struct gcc_target targetm = TARGET_INITIALIZER;
 
-/* Return truth value if a CONST_DOUBLE is ok to be a legitimate constant.  */
+/* pragma fpga support */
+void microblaze_include_dspfunc(char*funcname){
+  char outname[1024];
+  char str[1024];
+  char outstr[1024];
+  FILE* flink,* flinkr;
+  sprintf(outname,"%s.dspconf",aux_base_name);
+  flinkr=fopen(outname,"r");
+  sprintf(outstr,"_include %s\n",funcname);
+  while(flinkr&&!feof(flinkr)){
+    fgets(str,1024,flinkr);
 
+    if(!strcmp(str,outstr)){
+
+      fclose(flinkr);
+      return;
+    }
+  }
+  if(flinkr)
+    fclose(flinkr);
+  flink=fopen(outname,"a+");
+  if(flink==NULL){
+    printf("## cannot open %s for writing\n",outname);
+    exit(1);
+  }
+
+  fprintf(flink,"%s",outstr);
+  
+  fclose(flink);
+}
+
+microblaze_hfunc_attr_t* get_hfunc_attrs(void){
+  return hfunc_attr;
+}
+static void check_hfunc_attrs(void){
+  int id;
+  char *compname;
+  microblaze_hfunc_attr_t*tmp;
+  tmp=hfunc_attr;
+  compname=tmp->compname;
+  id=tmp->id;
+  while(tmp){
+    if(strcmp(compname,tmp->compname)){
+      error("## You cannot mix pragma map function attributes for different PE\n");
+    }
+    if(id!=tmp->id){
+      error("## You cannot mix pragma map function attributes for different implementations\n");
+    }
+    printf("* checking attribute %s %d\n",tmp->compname,tmp->id);
+    tmp=tmp->next;
+  }
+}
+
+/*static char* xstrdup(char *str){
+  char* tmp=xmalloc(strlen(str)+1);
+  strcpy(tmp,str);
+  return tmp;
+  }*/
+void add_hfunc_attr(char*compname,int id,char*argname,int size,int type){
+  microblaze_hfunc_attr_t*tmp = (microblaze_hfunc_attr_t*)xmalloc(sizeof(microblaze_hfunc_attr_t));
+
+  gcc_assert(tmp);
+  tmp->compname=xstrdup(compname);
+  tmp->id=id;
+  tmp->argname=argname?xstrdup(argname):0;
+      
+  tmp->size = size;
+  tmp->type = type;
+  tmp->next = 0;
+  
+  if(hfunc_attr){
+    tmp->next = hfunc_attr;
+    hfunc_attr->next = 0;
+  }
+  hfunc_attr=tmp;
+  printf("* adding attribute %s %d\n",tmp->compname,tmp->id);
+  check_hfunc_attrs();
+}
+
+void remove_hfunc_attrs(void){
+  microblaze_hfunc_attr_t*tmp,*tmpp;
+  tmp=hfunc_attr;
+  while(tmp){
+    tmpp=tmp;
+    free(tmp->compname);
+    free(tmp->argname);
+    tmpp=tmp;
+    tmp=tmp->next;
+    free(tmpp);
+  }
+  hfunc_attr=NULL;
+}
+
+
+
+static tree get_magic_alias(tree decl){
+  tree type = TREE_TYPE(decl);
+  char name[512];
+  char *varname=IDENTIFIER_POINTER (DECL_NAME (decl));
+
+  sprintf(name,"%s",varname);
+  switch(TREE_CODE (type)){
+  case INTEGER_TYPE:
+  case POINTER_TYPE:
+    sprintf(name,"%s__magic_integer__",varname);
+    break;
+    
+  case REAL_TYPE:
+    sprintf(name,"%s__magic_float__",varname);
+    break;
+  case ARRAY_TYPE:
+    switch(TREE_CODE(TREE_TYPE(type))){
+    case REAL_TYPE:
+      sprintf(name,"%s__magic_float__",varname);
+      break;
+    case INTEGER_TYPE:
+    case POINTER_TYPE:
+      sprintf(name,"%s__magic_integer__",varname);
+      break;
+    default:
+      fprintf(stderr," unknown array\n");
+      debug_tree(decl);
+      break;
+    }
+    break;
+  default:{
+    fprintf(stderr," unknown type for %s variable\n",name);
+    debug_tree(decl);
+  }
+
+    break;
+  }
+  return build_string(strlen(name)+1,ASTRDUP(name));
+}
+/* Handle a "call_hw" attribute; arguments as in
+   struct attribute_spec.handler.  */
+
+static tree
+microblaze_handle_call_hw_attribute (tree *node, 
+           tree name,
+           tree args ATTRIBUTE_UNUSED,
+           int flags ATTRIBUTE_UNUSED,
+           bool *no_add_attrs)
+{  
+
+
+    /* not declaration, it's a body*/
+
+
+  if ((TREE_CODE (*node) != FUNCTION_DECL)&& (TREE_CODE (*node) != VAR_DECL)){
+
+      warning (OPT_Wattributes, "%qs attribute only applies to functions",
+         IDENTIFIER_POINTER (name));
+      *no_add_attrs = true;
+    }
+
+  return NULL_TREE;
+}
+
+/* end of fpga support block
+
+
+
+/* Return truth value if a CONST_DOUBLE is ok to be a legitimate constant.  */
 int
 microblaze_const_double_ok (rtx op, enum machine_mode mode)
 {
@@ -3592,4 +3778,213 @@ microblaze_elf_asm_init_sections (void)
   sdata2_section
     = get_unnamed_section (SECTION_WRITE, output_section_asm_op,
 			   SDATA2_SECTION_ASM_OP);
+}
+
+
+/* Handle the Virtex II platform specific pragma call_hw.
+   Its syntax is
+   # pragma call_hw param
+   where param is a string */
+
+static int nowait;
+
+static tree build_string_constant(char*str){
+  int len = strlen(str)+1;
+  tree t  = build_string(len,str);
+  tree pointer = build_pointer_type(char_type_node);
+  TREE_TYPE(t)=pointer;
+  TREE_CONSTANT (t) = 1;
+  TREE_INVARIANT (t) = 1;
+  TREE_READONLY (t) = 1;
+  TREE_STATIC (t) = 1;
+
+  return t;
+}
+
+void microblaze_pragma_call_hw (cpp_reader *pfile ATTRIBUTE_UNUSED)
+{
+  tree s_id,s_eof;
+  tree parameter;
+  enum cpp_ttype parameter_type;
+  tree param_args=NULL_TREE;
+  tree call_hw;
+  char stringa[256];
+  *stringa=0;
+  nowait=0;
+  parameter_type = pragma_lex(&call_hw);
+
+  if (parameter_type != CPP_NAME || strcmp(IDENTIFIER_POINTER(call_hw),"call_hw")!=0) {
+    warning (OPT_Wpragmas, "malformed pragma map. (should be 'pragma map call_hw name id')");
+    warning (OPT_Wpragmas, "ignoring malformed pragma");
+    return;
+  }
+
+  
+  parameter_type = pragma_lex(&call_hw_comp);
+
+  if (parameter_type != CPP_NAME )
+   {
+    warning (OPT_Wpragmas, "missing parameter functional_component (should be 'pragma map call_hw name id')");
+    warning (OPT_Wpragmas, "ignoring malformed pragma");
+    return;
+   }
+  strncpy(comp_name,IDENTIFIER_POINTER(call_hw_comp),256);
+  parameter_type = pragma_lex(&s_id);
+
+  if (parameter_type != CPP_NUMBER)
+   {
+    warning (OPT_Wpragmas, "missing parameter id. (should be 'pragma map call_hw name id')");
+    warning (OPT_Wpragmas, "ignoring malformed pragma");
+    return;
+   }
+
+  comp_id = TREE_INT_CST_LOW(s_id);
+  sprintf(stringa,"%d,%s",comp_id,comp_name);
+  while((parameter_type=pragma_lex (&parameter) )!= CPP_EOF){
+    if(parameter_type==CPP_NAME){
+      sprintf(stringa,"%s,%s",stringa,IDENTIFIER_POINTER(parameter));
+      /*      if(!strcmp("nowait",IDENTIFIER_POINTER(parameter))){
+	tree param=build_tree_list(NULL_TREE,parameter);
+	TREE_CHAIN(param_args) = param;
+	nowait=1;
+	}*/
+    }
+    
+  }
+
+  
+  
+  
+  /*  printf("- parsed call_hw at %s %d @0x%x\n",comp_name,comp_id,call_hw_tree);*/
+  if(call_hw_tree==NULL_TREE) {
+
+    tree val;
+    tree args=build_string_constant(stringa);
+    TREE_CHAIN(args)=NULL_TREE;
+    //    tree id=build_tree_list(NULL_TREE,s_id);
+    //    tree comp=build_tree_list(NULL_TREE,call_hw_comp);
+
+    //args=chainon(args,);
+    //    args=chainon(build_tree_list(NULL_TREE,s_id),build_tree_list(NULL_TREE,call_hw_comp));
+    //    args=chainon(build_tree_list(get_identifier("ID"),s_id),build_tree_list(get_identifier("COMP"),call_hw_comp));
+    //    args=chainon(copy_node(s_id),copy_node(call_hw_comp));
+    //    if(param_args){
+      //      args=chainon(args,param_args);
+      //      args=chainon(args,copy_node(param_args));
+    //    }
+    
+
+    //    TREE_CHAIN(comp) = param_args;
+    //    TREE_CHAIN(id) = comp;
+    //    call_hw_tree = build_tree_list(get_identifier ("call_hw"),id);
+    call_hw_tree = build_tree_list(get_identifier ("call_hw"),args);
+    TREE_CHAIN(call_hw_tree)=NULL_TREE;
+    /*     fprintf(stderr,"--- generated tree ---\n");
+    debug_tree(call_hw_tree);
+    fprintf(stderr,"--- ----- ---\n");
+    */
+    //    fprintf(stderr,"--- call tree ---\n");
+    //    debug_tree(call_hw_tree);
+    /*
+      val = TREE_VALUE(call_hw_tree);
+      while(val){
+      fprintf(stderr,"* created chain -> 0x%x\n",val);
+      debug_tree(val);
+      val = TREE_CHAIN(val);
+      }
+    */
+    
+  } else {
+    debug_tree(call_hw_tree);
+    /*    call_hw_tree = chainon (call_hw_tree, build_tree_list (s_id, NULL_TREE));*/
+    gcc_assert(0);
+
+  }
+}  
+
+
+static void microblaze_insert_attributes (tree decl, tree *attributes)
+{
+#if 1
+  if(TREE_CODE (decl) ==VAR_DECL ){
+
+    if(call_hw_tree != NULL_TREE) {
+      
+      char* comp=IDENTIFIER_POINTER ( call_hw_comp);
+      call_hw_tree = NULL_TREE;
+
+      if(microblaze_check_dsp(comp)){
+
+	tree vname= get_magic_alias(decl);
+	//	fprintf(stderr,"* generating week variable \"%s\" for %s\n",IDENTIFIER_POINTER (vname),comp);
+	*attributes = tree_cons (get_identifier ("weakref"), tree_cons(NULL_TREE,vname,NULL_TREE), *attributes);
+	DECL_EXTERNAL (decl) = 1;
+	TREE_PUBLIC (decl) = 0;
+      }
+      call_hw_comp = NULL_TREE;
+    }
+    return;
+  }
+#endif
+  if((TREE_CODE (decl) ==FUNCTION_DECL) ){
+    if(call_hw_tree != NULL_TREE) {
+
+      if(optimize < 1) {
+	warning (OPT_Wpragmas, "ignoring call_hw on optimization level less than O3");
+      } else {
+	*attributes = chainon(*attributes, chainon(call_hw_tree,NULL_TREE));
+	/*	fprintf(stderr,"inserting attribute call_hw to %s\n",IDENTIFIER_POINTER ( DECL_NAME(decl)));*/
+      }
+      call_hw_tree = NULL_TREE;
+
+      {
+	char* comp=IDENTIFIER_POINTER ( call_hw_comp);
+
+	if(microblaze_check_dsp(comp)){
+	  char varname_dsp[512];
+	  sprintf(varname_dsp,"%s__magic_text__",IDENTIFIER_POINTER (DECL_NAME (decl)));
+	  /*  fprintf(stderr,"* generating week function \"%s\" for %s \n",varname_dsp,comp);*/
+
+	  
+	  *attributes = tree_cons (get_identifier ("weakref"), tree_cons(NULL_TREE,build_string(strlen(varname_dsp)+1,ASTRDUP(varname_dsp)),NULL_TREE), *attributes);
+	  DECL_EXTERNAL (decl) = 1;
+	  TREE_PUBLIC (decl) = 0;
+	  microblaze_include_dspfunc( IDENTIFIER_POINTER (DECL_NAME (decl)));
+	}
+	call_hw_comp = NULL_TREE;
+      }
+
+    }
+  }
+
+}
+int microblaze_check_dsp(char*compname){
+  return (!strcmp(compname,"DSP")||!strcmp(compname,"dsp")||!strcmp(compname,"magic")||!strcmp(compname,"MAGIC"));
+}
+
+int microblaze_check_fpga(char*compname){
+  return (!strcmp(compname,"VIRTEX4")||!strcmp(compname,"virtex4"));
+
+}
+
+void hartes_call_hw_get_params(char*str,unsigned* id,char**compname,char**args,int *cnt){
+  char src[256];
+  char*pnt ;
+  if(!str) return;
+  strncpy(src,str,256);
+  pnt = strtok(src,",");
+  if(pnt){
+    *id = strtoul(pnt,0,0);
+  }
+  pnt=strtok(NULL,",");
+  if(pnt&& compname){
+    *compname=pnt;
+  }
+  if(args==0) return;
+  *cnt=0;
+  /* fprintf(stderr," check args\n");*/
+  while(pnt=strtok(NULL,",\n")){
+    /*    fprintf(stderr,"==? %d %s\n",*cnt,pnt);*/
+    args[(*cnt)++] = pnt;
+  }
 }

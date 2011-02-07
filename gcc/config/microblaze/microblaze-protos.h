@@ -67,4 +67,30 @@ extern void function_arg_advance (CUMULATIVE_ARGS *, enum machine_mode,
 extern rtx function_arg (CUMULATIVE_ARGS *, enum machine_mode, tree, int);
 #endif /* TREE_CODE */
 
+/* Support for pragma call_hw */
+extern void microblaze_pragma_call_hw (struct cpp_reader *);
+extern GTY(()) tree call_hw_tree;
+
+#define HPOINTER_TYPE_RW 0
+#define HPOINTER_TYPE_RO 1
+#define HPOINTER_TYPE_WO 2
+#define HPOINTER_TYPE_STATIC 4
+
+typedef struct _microblaze_hfunc_attr {
+  char* compname;
+  int id;
+  char* argname;
+  int size;
+  int type;
+  struct _microblaze_hfunc_attr*next;
+} microblaze_hfunc_attr_t;
+
+void add_hfunc_attr(char*compname,int id,char*argname,int size,int type);
+void remove_hfunc_attrs(void);
+microblaze_hfunc_attr_t* get_hfunc_attrs(void);
+int microblaze_check_dsp(char*compname);
+int microblaze_check_fpga(char*compname);
+void microblaze_include_dspfunc(char*funcname);
+void hartes_call_hw_get_params(char*str,unsigned* id,char**compname,char**args,int *cnt);
+extern int hartes_rpc_uid;
 #endif  /* __MICROBLAZE_PROTOS__ */

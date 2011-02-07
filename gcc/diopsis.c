@@ -299,7 +299,7 @@ static unsigned int do_diopsis_replace_calls_tree(tree r,tree_stmt_iterator *tsi
 	  hartes_call_hw_get_params(TREE_STRING_POINTER(arg),&hattr_id,&compname,0,0);
 	  /*	  fprintf(stderr,"- PRAGMA ON CALL %s, id %d comp \"%s\"\n",TREE_STRING_POINTER(arg),hattr_id,compname);*/
 	  pragma_on_call = arg;
-	  if(compname&&(arm_check_dsp(compname))){
+	  if(compname&&(microblaze_check_dsp(compname))){
 	    pragma_on_call_magic=CALL_EXPR_ARG (call, 0);
 	    tsi_delink(&tsi);
 	  }
@@ -542,7 +542,7 @@ static void diopsis_replace_call_tree_tsi (tree_stmt_iterator *tsi){
 	  const char *func_name=IDENTIFIER_POINTER ( DECL_NAME(decl));
 	      
 	  sprintf(func_mangled,"%s__magic_text__",func_name);
-	  arm_include_dspfunc(func_name);
+	  microblaze_include_dspfunc(func_name);
 	  dsp_addr=create_external_var_raw(integer_type_node,func_mangled);
 	  diopsis_print_debug(2,"mangled name %s, RPC UID 0x%x(%d) %s\n ",func_mangled,hartes_rpc_uid,hartes_rpc_uid,func_type(func_flags));
 	  /*	      debug_tree(stmt);*/
