@@ -160,6 +160,8 @@ extern char *microblaze_no_clearbss;
 /* This is the only format we support */
 #define OBJECT_FORMAT_ELF
 
+
+
 /* Run-time compilation parameters selecting different hardware subsets.  */
 
 /* Macros used in the machine description to test the flags.  */
@@ -1564,6 +1566,15 @@ do {									 \
 
 #undef TARGET_ASM_INIT_SECTIONS
 #define TARGET_ASM_INIT_SECTIONS microblaze_elf_asm_init_sections
+
+
+/* Handle pragmas for compatibility with Intel's compilers.  */
+/* Also abuse this to register additional C specific EABI attributes.  */
+#define REGISTER_TARGET_PRAGMAS() do {					\
+  /* Support for pragma call_hw */ 					\
+  c_register_pragma (0, "map", microblaze_pragma_call_hw);  		\
+ /* microblaze_lang_object_attributes_init(); */ \
+} while (0)
 
 /* Define the strings to put out for each section in the object file.  
    
